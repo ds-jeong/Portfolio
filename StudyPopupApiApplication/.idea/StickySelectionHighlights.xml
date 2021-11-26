@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="StickySelectionHighlights">
+    <option name="editorHighlights">
+      <map>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/pom.xml">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/java/com/example/StudyPopupApiApplication/ServletInitializer.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/java/com/example/StudyPopupApiApplication/StudyPopupApiApplication.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/java/com/example/StudyPopupApiApplication/configuration/WebMvcConfig.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/java/com/example/StudyPopupApiApplication/controller/PopupApiApplication.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/java/com/example/StudyPopupApiApplication/controller/PopupApiController.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/java/com/example/StudyPopupApiApplication/controller/studyPopupApiApplication.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/resources/application.properties">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/resources/application.yml">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/resources/log4jdbc.log4j2.properties">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/resources/static/css/addrlinkSample.css">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/webapp/WEB-INF/jsp/index.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/webapp/WEB-INF/jsp/popup/jusoPopup.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyPopupApiApplication/src/main/webapp/WEB-INF/jsp/sample.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

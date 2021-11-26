@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="StickySelectionHighlights">
+    <option name="editorHighlights">
+      <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$APPLICATION_CONFIG_DIR$/idea64.exe.vmoptions">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/pom.xml">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/java/com/example/StudyXmlToJson/ServletInitializer.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/java/com/example/StudyXmlToJson/StudyXmlToJson.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/java/com/example/StudyXmlToJson/StudyXmlToJsonApplication.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/java/com/example/StudyXmlToJson/controller/ApiSampleXmlController.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/java/com/example/StudyXmlToJson/controller/XmlToJsonController.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/java/com/example/StudyXmlToJson/controller/apiSampleJSONController.java">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/resources/application.properties">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/resources/webapp/WEB-INF/jsp/index.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/webapp/WEB-INF/jsp/apiSampleApplicationJSON.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/webapp/WEB-INF/jsp/apiSampleApplicationXML.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/StudyXmlToJson/src/main/webapp/WEB-INF/jsp/index.jsp">
+          <value>
+            <PaintGroupHighlightMap />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

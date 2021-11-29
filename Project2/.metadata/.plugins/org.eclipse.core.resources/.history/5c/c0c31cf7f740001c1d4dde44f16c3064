@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board.mapper">
+	<select id="searchList" parameterType="boardVo" resultType="boardVo">
+	
+		SELECT
+			user_id,
+			photo_type,
+			sn,
+			('/' || photo_type || '/' || sn || '/' || to_char(attendance_day, 'YYYY') || '/' || to_char(attendance_day, 'MMDD') || '/' || to_char(min(attendance_time), 'HH24MISS') || '_' || cast(badgenumber AS numeric) || '.jpg') as startTimePhoto,
+			CASE when
+			min(attendance_time)!=max(attendance_time) 
+			THEN 
+			('/' || photo_type || '/' || sn || '/' || to_char(attendance_day, 'YYYY') || '/' || to_char(attendance_day, 'MMDD') || '/' || to_char(max(attendance_time), 'HH24MISS') || '_' || cast(badgenumber AS numeric) || '.jpg')
+			end AS endTimePhoto,
+			badgenumber,
+			attendance_day,
+			company_no,
+			site_no,
+			team_no,
+			team_name,
+			NAME,
+			min(attendance_time) AS startTime,
+			CASE when
+			min(attendance_time)!=max(attendance_time) THEN max(attendance_time)
+			end AS endTime
+		from
+		(
+			SELECT
+				c.user_id,
+				C.sn,
+				t.company_no,
+				t.site_no,
+				t.team_no,
+				t.photo_type,
+				t.team_name,
+				u.name,
+				u.badgenumber,
+				c.checktime::DATE AS attendance_day,
+				c.checktime::TIME AS attendance_time
+			FROM
+				checkinout c
+			LEFT JOIN
+				userinfo u
+			ON
+				c.user_id = u.user_id
+			LEFT JOIN
+				team t
+			ON
+				u.team_no = t.team_no
+			WHERE
+				u.company_no =#{company_no}
+			AND
+				u.site_no= #{site_no}
+			GROUP BY
+				c.user_id, c.checktime , t.company_no, c.sn, t.photo_type, t.site_no, t.team_no, u.name, u.badgenumber,c.checktime
+			ORDER BY
+				c.user_id
+		) As a
+		WHERE
+		<choose>
+			<when test="startDt != null and startDt != ''.toString() and endDt != null and endDt != ''.toString()">
+				to_char(attendance_day, 'YYYY-MM-dd') BETWEEN #{startDt} and  #{endDt}
+				 <!--  (attendance_day >= #{startDt} and attendance_day  <![CDATA[<=]]>  #{endDt})
+				 -->
+				 <!--
+				(attendance_day >= #{startDt, jdbcType=VARCHAR} and attendance_day <![CDATA[<=]]> #{endDt, jdbcType=VARCHAR})
+				-->
+				<choose>
+					<when test="searchType == '1'.toString()">and  badgenumber = #{searchText}</when>
+					<otherwise>AND name= #{searchText}</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				<choose>
+						<when test="searchType =='1'.toString()">  badgenumber = #{searchText}</when>
+						<otherwise> name= #{searchText}</otherwise>
+					</choose>
+			</otherwise>
+		</choose>
+		GROUP BY
+			user_id, company_no, site_no, team_no, team_name, NAME, attendance_day, badgenumber,sn,photo_type
+		ORDER BY
+			attendance_day
+	</select>
+
+
+	<select id="teamList" resultType="boardVo">
+		select team_no, team_name from
+		team where site_no = #{site_no}
+	</select>
+	<select id="siteList" resultType="boardVo">
+		select site_no, site_name from
+		site where company_no = #{company_no}
+	</select>
+	<select id="companyList" resultType="boardVo">
+		select company_no,
+		company_name from company
+	</select>
+
+
+</mapper>

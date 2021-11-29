@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+body{
+	margin: 0 auto;
+	margin-top : 100px;
+	text-align: center;
+	font-family: m, sans-serif;
+}
+table {
+	margin: 0 auto;
+	margin-top : 40px;
+	width: 90%;
+	border:none;
+	border-collapse: collapse;
+}
+/*border-collapse: 테이블의 선과 테이블안에 td 선의 간격을 없애 겹치는 부분을 한줄로 만들어준다. */
+table th, table td{
+	border:1px solid;
+	padding: 5px 13px;
+}
+
+
+table a:hover{
+	cursor: pointer;
+	font-weight: bold;
+}
+
+
+
+
+

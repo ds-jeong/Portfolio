@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inface.infaceCBP.mapper.SalesDetailsManagementMapper">
+
+<!--입금내역 저장-->
+<update id="depositExcelSubmit" parameterType="SalesDetailsManagementVO"><![CDATA[
+UPDATE DEPOSIT_DETAIL
+SET COMPANY_NO = #{companyNo}
+WHERE DEPOSIT_DT_NO = #{depositDtNo}
+]]></update>
+<!--////입금내역 저장-->
+
+<!--입금내역 삭제-->
+<delete id="depositExcelDelete" parameterType="SalesDetailsManagementVO"><![CDATA[
+DELETE
+FROM DEPOSIT_DETAIL
+WHERE DEPOSIT_DT_NO = #{depositDtNo}
+]]></delete>
+<!--////입금내역 삭제-->
+
+<!--입금내역 파일 업로드-->
+<insert id="insertDepositDtExcel" parameterType="SalesDetailsManagementVO">
+INSERT INTO DEPOSIT_DETAIL
+( deposit_dt
+, deposit_account
+, deposit_content
+, deposit_bank)
+VALUES
+<foreach collection="depositExcelContent" item="item" separator=",">
+    (#{item.A}
+    , #{item.B}
+    , #{item.C}
+    , #{item.D}
+    )
+</foreach>
+</insert>
+<!--////입금내역 파일 업로드-->
+
+<!--입금내역 조회-->
+<select id="getDepositDetailList" parameterType="SalesDetailsManagementVO" resultType="SalesDetailsManagementVO">
+<![CDATA[
+SELECT PG.*
+FROM (
+SELECT va.*
+, ROW_NUMBER() OVER() AS RNUM -- 페이징처리용 컬럼
+FROM (SELECT CM.COMPANY_NO
+    , CM.COMPANY_NAME
+    , dd.DEPOSIT_DT_NO
+    , dd.DEPOSIT_CHK_SORTATION
+    , SPLIT_PART(dd.DEPOSIT_DT::VARCHAR, ' ', 1)                     AS DEPOSIT_DT
+    , REPLACE(dd.DEPOSIT_ACCOUNT, '.', '') AS DEPOSIT_ACCOUNT
+    , dd.DEPOSIT_CONTENT
+    , dd.DEPOSIT_BANK
+    , SPLIT_PART(dd.DEPOSIT_DT::VARCHAR, '-', 1)                     AS Dyear
+    , SPLIT_PART(dd.DEPOSIT_DT::VARCHAR, '-', 2)                     AS Dmm
+    , SPLIT_PART(SPLIT_PART(dd.DEPOSIT_DT::VARCHAR, '-', 3), ' ', 1) AS Ddd
+    , SPLIT_PART(dd.DEPOSIT_DT::VARCHAR, ' ', 3) AS Dtime
+    , COUNT(*)                                                          OVER() AS TOTAL_RECORD_COUNT -- 페이징처리용 컬럼
+FROM DEPOSIT_DETAIL AS DD
+        LEFT JOIN COMPANY AS CM ON dd.COMPANY_NO = CM.COMPANY_NO
+WHERE dd.DEPOSIT_DT_NO IS NOT NULL]]>
+<if test="searchYear != null and !searchYear.equals('')">
+    AND SPLIT_PART(dd.DEPOSIT_DT, '-', 1) = #{searchYear}
+</if>
+<if test="searchMonth != null and !searchMonth.equals('')">
+    AND SPLIT_PART(dd.DEPOSIT_DT, '-', 2) = #{searchMonth}
+</if>
+<if test="searchCompanyNo != 0 and searchCompanyNo != null">
+    AND CM.COMPANY_NO = #{searchCompanyNo}
+</if><![CDATA[
+GROUP BY CM.COMPANY_NO
+      , CM.COMPANY_NAME
+      , dd.DEPOSIT_DT_NO
+      , dd.DEPOSIT_CHK_SORTATION
+      , dd.DEPOSIT_DT
+      , dd.DEPOSIT_ACCOUNT
+      , dd.DEPOSIT_CONTENT
+      , dd.DEPOSIT_BANK
+ORDER BY DD.DEPOSIT_DT_NO) as va
+LIMIT #{endRownum, jdbcType=NUMERIC}
+) as PG
+WHERE RNUM BETWEEN #{startRownum, jdbcType=NUMERIC} AND #{endRownum, jdbcType=NUMERIC}]]>
+</select>
+<!--////입금내역 조회-->
+
+<!--매출명세서 저장-->
+<update id="salesExcelSubmit" parameterType="SalesDetailsManagementVO"><![CDATA[
+UPDATE SALES_DETAIL
+SET SITE_NO = #{siteNo}
+WHERE SAL_DT_NO = #{salDtNo}
+]]></update>
+<!--////매출명세서 저장-->
+
+<!--매출명세서 삭제-->
+<delete id="salesExcelDelete" parameterType="SalesDetailsManagementVO"><![CDATA[
+DELETE
+FROM SALES_DETAIL
+WHERE SAL_DT_NO = #{salDtNo}
+]]></delete>
+<!--////매출명세서 삭제-->
+
+<!--매출명세서 파일 업로드-->
+<insert id="insertSalesDtExcel" parameterType="SalesDetailsManagementVO">
+INSERT INTO SALES_DETAIL
+( SAL_DT_BUSINESS_NO
+, SAL_DT_APPROVAL_NUMBER
+, SAL_DT_ISSUE_DATE
+, SAL_DT_SUM_ACCOUNT
+, SAL_DT_SUPPLY_PRICE
+, SAL_DT_TAX_PRICE
+, SAL_DT_ELECTRONIC_TAX_INVOICE_KIND
+, SAL_DT_ELECTRONIC_TAX_INVOICE_CLASSIFICATION
+, SAL_DT_TYPE
+, SAL_DT_EMAIL
+, SAL_DT_ITEM_NM
+, SAL_DT_ITEM_QUANTITY
+, SAL_DT_ITEM_UNIT_PRICE
+, SAL_DT_ITEM_SUPPLY_PRICE
+, SAL_DT_ITEM_TAX_AMOUNT
+, SAL_DT_ITEM_COST)
+VALUES
+<foreach collection="excelContent" item="item" separator=",">
+    (
+    #{item.A},
+    #{item.B},
+    #{item.C},
+    #{item.D},
+    #{item.E},
+    #{item.F},
+    #{item.G},
+    #{item.H},
+    #{item.I},
+    #{item.J},
+    #{item.K},
+    #{item.L},
+    #{item.M},
+    #{item.N},
+    #{item.O},
+    #{item.P}
+    )
+</foreach>
+</insert>
+<!--////매출명세서 파일 업로드-->
+
+<!--매출명세서 조회-->
+<select id="getSalesDetailList" parameterType="SalesDetailsManagementVO" resultType="SalesDetailsManagementVO">
+<![CDATA[
+SELECT PG.*
+FROM (
+SELECT va.*
+, ROW_NUMBER() OVER() AS RNUM -- 페이징처리용 컬럼
+FROM (SELECT CM.COMPANY_NO
+    , CM.COMPANY_NAME
+    , SD.SAL_DT_NO
+    , SD.SITE_NO
+    , SI.SITE_NAME
+    , SD.SAL_DT_BUSINESS_NO
+    , SD.SAL_DT_APPROVAL_NUMBER
+    , SD.SAL_DT_ISSUE_DATE
+    , REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '') AS SAL_DT_SUM_ACCOUNT
+    , REPLACE(SD.SAL_DT_SUPPLY_PRICE, '.', '') AS SAL_DT_SUPPLY_PRICE
+    , REPLACE(SD.SAL_DT_TAX_PRICE, '.', '') AS SAL_DT_TAX_PRICE
+    , SD.SAL_DT_ELECTRONIC_TAX_INVOICE_KIND
+    , SD.SAL_DT_ELECTRONIC_TAX_INVOICE_CLASSIFICATION
+    , SD.SAL_DT_TYPE
+    , SD.SAL_DT_EMAIL
+    , SD.SAL_DT_ITEM_NM
+    , SD.SAL_DT_ITEM_QUANTITY
+    , SD.SAL_DT_ITEM_UNIT_PRICE
+    , SD.SAL_DT_ITEM_SUPPLY_PRICE
+    , SD.SAL_DT_ITEM_TAX_AMOUNT
+    , SD.SAL_DT_ITEM_COST
+    , COUNT(*) OVER() AS TOTAL_RECORD_COUNT -- 페이징처리용 컬럼
+    , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) AS Dyear
+    , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) AS Dmm
+FROM SALES_DETAIL AS SD
+        LEFT JOIN COMPANY AS CM ON SD.SAL_DT_BUSINESS_NO = CM.BUSINESS_NO
+        LEFT JOIN SITE AS SI ON SD.SITE_NO = SI.SITE_NO
+WHERE CM.COMPANY_NO IS NOT NULL]]>
+<if test="searchYear != null and !searchYear.equals('')">
+    AND SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) = #{searchYear}
+</if>
+<if test="searchMonth != null and !searchMonth.equals('')">
+    AND SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = #{searchMonth}
+</if>
+<if test="searchCompanyNo != 0 and searchCompanyNo != null">
+    AND CM.COMPANY_NO = #{searchCompanyNo}
+</if><![CDATA[
+GROUP BY CM.COMPANY_NO
+      , CM.COMPANY_NAME
+      , SD.SAL_DT_NO
+      , SD.SITE_NO
+      , SI.SITE_NAME
+      , SD.SAL_DT_BUSINESS_NO
+      , SD.SAL_DT_APPROVAL_NUMBER
+      , SD.SAL_DT_ISSUE_DATE
+      , SD.SAL_DT_SUM_ACCOUNT
+      , SD.SAL_DT_SUPPLY_PRICE
+      , SD.SAL_DT_TAX_PRICE
+      , SD.SAL_DT_ELECTRONIC_TAX_INVOICE_KIND
+      , SD.SAL_DT_ELECTRONIC_TAX_INVOICE_CLASSIFICATION
+      , SD.SAL_DT_TYPE
+      , SD.SAL_DT_EMAIL
+      , SD.SAL_DT_ITEM_NM
+      , SD.SAL_DT_ITEM_QUANTITY
+      , SD.SAL_DT_ITEM_UNIT_PRICE
+      , SD.SAL_DT_ITEM_SUPPLY_PRICE
+      , SD.SAL_DT_ITEM_TAX_AMOUNT
+      , SD.SAL_DT_ITEM_COST
+ORDER BY SD.SAL_DT_NO) AS VA
+LIMIT #{endRownum, jdbcType=NUMERIC}
+) AS PG
+WHERE RNUM BETWEEN #{startRownum, jdbcType=NUMERIC} AND #{endRownum, jdbcType=NUMERIC}
+]]>
+</select>
+<!--////매출명세서 조회-->
+
+<!--현장별매출 상세조회-->
+<select id="getSiteSalesDetail" parameterType="SalesDetailsManagementVO" resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT ST.SITE_NO
+     , ST.SITE_NAME
+     , A.SAL_DT_SUM_ACCOUNT
+     , A.DATEMONTH
+     , A.SITE_NO
+     , DV.SITE_NO
+     , A.M1
+     , A.M2
+     , A.M3
+     , A.M4
+     , A.M5
+     , A.M6
+     , A.M7
+     , A.M8
+     , A.M9
+     , A.M10
+     , A.M11
+     , A.M12
+     , A.M1 + A.M2 + A.M3 + A.M4 + A.M5 + A.M6 + A.M7 + A.M8 + A.M9 + A.M10 + A.M11 + A.M12 AS TOTALSUM
+FROM SITE AS ST
+         LEFT JOIN COMPANY AS CM ON ST.COMPANY_NO = ST.COMPANY_NO
+         LEFT JOIN (SELECT SD.SITE_NO
+                         , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2)              AS DATEMONTH
+                         , SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER) AS SAL_DT_SUM_ACCOUNT
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '01'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M1
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '02'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M2
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '03'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M3
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '04'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M4
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '05'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M5
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '06'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M6
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '07'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M7
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '08'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M8
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '09'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M9
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '10'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M10
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '11'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M11
+                         , CASE
+                               WHEN SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 2) = '12'
+                                   THEN SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER)
+                               ELSE 0 END                                        AS M12
+                    FROM SALES_DETAIL AS SD
+                    WHERE SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) = #{salDtIssueDate}
+                      AND SITE_NO IS NOT NULL
+                    GROUP BY DATEMONTH
+                           , SD.SITE_NO) AS A ON ST.SITE_NO = A.SITE_NO
+         LEFT JOIN device AS DV ON ST.SITE_NO = DV.SITE_NO
+WHERE ST.COMPANY_NO = ${companyNo}
+  AND A.SITE_NO IS NOT NULL
+GROUP BY ST.SITE_NO
+       , ST.SITE_NAME
+       , A.SAL_DT_SUM_ACCOUNT
+       , A.DATEMONTH
+       , A.SITE_NO
+       , DV.SITE_NO
+       , A.M1, A.M2, A.M3, A.M4, A.M5, A.M6, A.M7, A.M8, A.M9, A.M10, A.M11, A.M12
+]]>
+</select>
+<!--////현장별매출 상세조회-->
+
+<!--업체별 입금내역 상세조회-->
+<select id="getCompanyDepositDetailList" parameterType="SalesDetailsManagementVO"
+    resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT COALESCE(dd.COMPANY_NO, 0)                                 AS COMPANY_NO
+     , COALESCE(SPLIT_PART(dd.DEPOSIT_DT, '-', 2)::VARCHAR, NULL) AS DMM
+     , COALESCE(SPLIT_PART(dd.DEPOSIT_DT, ' ', 1)::VARCHAR, NULL) AS DEPOSIT_DT
+     , COALESCE(SPLIT_PART(dd.DEPOSIT_DT, ' ', 2)::VARCHAR, NULL) AS DTIME
+     , COALESCE(REPLACE(dd.DEPOSIT_ACCOUNT, '.', '')::INTEGER, 0)    DEPOSIT_ACCOUNT
+     , COALESCE(dd.DEPOSIT_CONTENT, NULL)                         AS DEPOSIT_CONTENT
+     , COALESCE(dd.DEPOSIT_BANK, NULL)                            AS DEPOSIT_BANK
+     , SUM(REPLACE(dd.DEPOSIT_ACCOUNT, '.', '')::INTEGER)            OVER(ORDER BY COMPANY_NO) AS CUMULATIVE_SUM
+FROM DEPOSIT_DETAIL AS DD
+WHERE dd.COMPANY_NO = #{companyNo}
+  AND SPLIT_PART(dd.DEPOSIT_DT, '-', 1) = #{dyear}
+]]>
+    <if test="searchMonth != null and !searchMonth.equals('')">
+        AND SPLIT_PART(dd.DEPOSIT_DT, '-', 2) = #{searchMonth}
+    </if><![CDATA[
+GROUP BY COMPANY_NO
+       , DMM
+       , DEPOSIT_DT
+       , DTIME
+       , DEPOSIT_ACCOUNT
+       , DEPOSIT_CONTENT
+       , DEPOSIT_BANK
+ORDER BY COMPANY_NO
+]]></select>
+<!--////업체별 입금내역 상세조회-->
+
+<!--업체별매출 상세조회가 없을때, 해당쿼리를 탄다.-->
+<select id="getCompanySalesDetailListNotEmpty" parameterType="SalesDetailsManagementVO"
+    resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT C.SAL_DT_ISSUE_DATE
+     , C.SAL_DT_SUM_ACCOUNT
+     , SUM(C.SITE_CNT)                                                         AS SITE_CNT
+     , C.COMPANY_NO
+     , C.DEPOSIT_ACCOUNT
+     , C.DEPOSIT_DT
+     , COALESCE(SUM(C.DEPOSIT_ACCOUNT), 0) - COALESCE(C.SAL_DT_SUM_ACCOUNT, 0) AS UNPAID_AMOUNT
+     , SUM(COALESCE(SUM(C.DEPOSIT_ACCOUNT), 0) -
+           COALESCE(C.SAL_DT_SUM_ACCOUNT, 0))                                     OVER
+    (ORDER BY C.SAL_DT_ISSUE_DATE) AS CUMULATIVE_SUM
+FROM (
+         SELECT A.SAL_DT_ISSUE_DATE
+              , A.COMPANY_NO
+              , SUM(A.SAL_DT_SUM_ACCOUNT) AS SAL_DT_SUM_ACCOUNT
+              , COUNT(DISTINCT A.SITE_NO) AS SITE_CNT
+              , B.DEPOSIT_ACCOUNT
+              , B.DEPOSIT_DT
+         FROM (
+                  SELECT SD.SAL_DT_BUSINESS_NO
+                       , CM.COMPANY_NO
+                       , CM.COMPANY_NAME
+                       , REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', ''):: INTEGER AS SAL_DT_SUM_ACCOUNT
+       ,SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) AS SAL_DT_ISSUE_DATE
+                       , SD.SITE_NO
+                  FROM SALES_DETAIL AS SD
+                           LEFT JOIN COMPANY AS CM ON SD.SAL_DT_BUSINESS_NO = CM.BUSINESS_NO
+                           LEFT JOIN SITE AS ST ON SD.SITE_NO = ST.SITE_NO
+                  WHERE SD.SITE_NO IS NOT NULL
+                  GROUP BY SD.SAL_DT_BUSINESS_NO
+                         , CM.COMPANY_NO
+                         , CM.COMPANY_NAME
+                         , SAL_DT_SUM_ACCOUNT
+                         , SD.SAL_DT_ISSUE_DATE
+                         , SD.SITE_NO) AS A
+                  LEFT JOIN (
+             SELECT K.DEPOSIT_DT
+                  , SUM(DEPOSIT_ACCOUNT) AS DEPOSIT_ACCOUNT
+                  , K.COMPANY_NO
+             FROM (SELECT SPLIT_PART(dd.DEPOSIT_DT, '-', 1) AS DEPOSIT_DT
+                        , REPLACE(dd.DEPOSIT_ACCOUNT, '.', ''):: INTEGER			  AS DEPOSIT_ACCOUNT
+           , CM.COMPANY_NO
+                   FROM DEPOSIT_DETAIL AS DD
+                            LEFT JOIN COMPANY AS CM ON dd.COMPANY_NO = CM.COMPANY_NO
+                   GROUP BY DEPOSIT_DT
+                          , CM.COMPANY_NO
+                          , dd.DEPOSIT_ACCOUNT
+                  ) AS K
+             GROUP BY K.DEPOSIT_DT
+                    , K.COMPANY_NO) AS B ON A.COMPANY_NO = B.COMPANY_NO
+         WHERE A.COMPANY_NO = #{companyNo}
+         GROUP BY A.SAL_DT_ISSUE_DATE
+                , A.COMPANY_NO
+                , B.DEPOSIT_DT
+                , B.DEPOSIT_ACCOUNT) AS C
+GROUP BY C.SAL_DT_ISSUE_DATE
+       , C.SAL_DT_SUM_ACCOUNT
+       , C.DEPOSIT_ACCOUNT
+       , C.COMPANY_NO
+       , C.DEPOSIT_DT
+ORDER BY C.SAL_DT_ISSUE_DATE DESC
+]]></select>
+<!--////업체별매출 상세조회가 없을때, 해당쿼리를 탄다.-->
+
+<!--업체별매출 상세조회-->
+<select id="getCompanySalesDetailList" parameterType="SalesDetailsManagementVO"
+    resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT C.SYEAR                                                                 AS SAL_DT_ISSUE_DATE
+     , C.DEPOSIT_ACCOUNT
+     , C.SAL_DT_SUM_ACCOUNT
+     , C.CNT                                                                   AS SITE_CNT
+     , C.COMPANY_NO
+     , COALESCE(SUM(C.DEPOSIT_ACCOUNT), 0) - COALESCE(C.SAL_DT_SUM_ACCOUNT, 0) AS UNPAID_AMOUNT
+     , SUM(COALESCE(SUM(C.DEPOSIT_ACCOUNT), 0) -
+           COALESCE(C.SAL_DT_SUM_ACCOUNT, 0))                                     OVER
+    (ORDER BY C.SYEAR) AS CUMULATIVE_SUM
+FROM (
+         SELECT DISTINCT SD.SAL_DT_BUSINESS_NO
+                       , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1)              AS SYEAR
+                       , SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER) AS SAL_DT_SUM_ACCOUNT
+                       , CM.COMPANY_NO
+                       , DD.DYEAR                                              AS DYEAR
+                       , DD.DEPOSIT_ACCOUNT
+                       , COUNT(ST.SITE_NO)                                     AS CNT
+         FROM SALES_DETAIL AS SD
+                  LEFT JOIN COMPANY AS CM ON CM.BUSINESS_NO = SD.SAL_DT_BUSINESS_NO
+                  LEFT JOIN SITE AS ST ON CM.COMPANY_NO = ST.COMPANY_NO
+                  LEFT JOIN (SELECT COALESCE(SPLIT_PART(D.DEPOSIT_DT, '-', 1), NULL) AS DYEAR
+                                  , REPLACE(D.DEPOSIT_ACCOUNT, '.', '') ::INTEGER AS DEPOSIT_ACCOUNT
+                             FROM DEPOSIT_DETAIL AS D
+                                      LEFT JOIN COMPANY AS CM ON D.COMPANY_NO = CM.COMPANY_NO
+                             WHERE D.COMPANY_NO = #{companyNo}
+                             GROUP BY DYEAR, DEPOSIT_ACCOUNT) AS DD
+                            ON SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) = DD.DYEAR
+         WHERE CM.COMPANY_NO = #{companyNo}
+           AND SD.SITE_NO IS NOT NULL
+         GROUP BY SD.SAL_DT_BUSINESS_NO
+                , SYEAR
+                , CM.COMPANY_NO
+                , DD.DYEAR
+                , DD.DEPOSIT_ACCOUNT
+                , ST.SITE_NO) AS C
+GROUP BY C.SYEAR
+       , C.CNT
+       , C.COMPANY_NO
+       , C.SAL_DT_SUM_ACCOUNT
+       , C.DEPOSIT_ACCOUNT
+ORDER BY C.SYEAR DESC
+]]></select>
+<!--////업체별매출 상세조회-->
+
+<!--20220117 backup-->
+<!--업체별매출 상세조회-->
+<!--<select id="getCompanySalesDetailList" parameterType="SalesDetailsManagementVO"
+resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT C.SAL_DT_ISSUE_DATE
+, C.SAL_DT_SUM_ACCOUNT
+, SUM(C.SITE_CNT)                                                         AS SITE_CNT
+, C.COMPANY_NO
+, C.DEPOSIT_ACCOUNT
+, C.DEPOSIT_DT
+, COALESCE(SUM(C.DEPOSIT_ACCOUNT), 0) - COALESCE(C.SAL_DT_SUM_ACCOUNT, 0) AS UNPAID_AMOUNT
+, SUM(COALESCE(SUM(C.DEPOSIT_ACCOUNT), 0) -
+   COALESCE(C.SAL_DT_SUM_ACCOUNT, 0))                                     OVER
+(ORDER BY C.SAL_DT_ISSUE_DATE) AS CUMULATIVE_SUM
+FROM (
+ SELECT A.SAL_DT_ISSUE_DATE
+      , A.COMPANY_NO
+      , SUM(A.SAL_DT_SUM_ACCOUNT) AS SAL_DT_SUM_ACCOUNT
+      , COUNT(DISTINCT A.SITE_NO) AS SITE_CNT
+      , B.DEPOSIT_ACCOUNT
+      , B.DEPOSIT_DT
+ FROM (
+          SELECT SD.SAL_DT_BUSINESS_NO
+               , CM.COMPANY_NO
+               , CM.COMPANY_NAME
+               , REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', ''):: INTEGER AS SAL_DT_SUM_ACCOUNT
+               ,SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) AS SAL_DT_ISSUE_DATE
+               , SD.SITE_NO
+          FROM SALES_DETAIL AS SD
+                   LEFT JOIN COMPANY AS CM ON SD.SAL_DT_BUSINESS_NO = CM.BUSINESS_NO
+                   LEFT JOIN SITE AS ST ON SD.SITE_NO = ST.SITE_NO
+          WHERE SD.SITE_NO IS NOT NULL
+          GROUP BY SD.SAL_DT_BUSINESS_NO
+                 , CM.COMPANY_NO
+                 , CM.COMPANY_NAME
+                 , SAL_DT_SUM_ACCOUNT
+                 , SD.SAL_DT_ISSUE_DATE
+                 , SD.SITE_NO) AS A
+          LEFT JOIN (
+     SELECT K.DEPOSIT_DT
+          , SUM(DEPOSIT_ACCOUNT) AS DEPOSIT_ACCOUNT
+          , K.COMPANY_NO
+     FROM (SELECT SPLIT_PART(dd.DEPOSIT_DT, '-', 1) AS DEPOSIT_DT
+                , REPLACE(dd.DEPOSIT_ACCOUNT, '.', ''):: INTEGER			  AS DEPOSIT_ACCOUNT
+                   , CM.COMPANY_NO
+           FROM DEPOSIT_DETAIL AS DD
+                    LEFT JOIN COMPANY AS CM ON dd.COMPANY_NO = CM.COMPANY_NO
+           GROUP BY DEPOSIT_DT
+                  , CM.COMPANY_NO
+                  , dd.DEPOSIT_ACCOUNT
+          ) AS K
+     GROUP BY K.DEPOSIT_DT
+            , K.COMPANY_NO) AS B ON A.COMPANY_NO = B.COMPANY_NO
+ WHERE A.COMPANY_NO = #{companyNo}
+   AND A.SAL_DT_ISSUE_DATE = B.DEPOSIT_DT
+ GROUP BY A.SAL_DT_ISSUE_DATE
+        , A.COMPANY_NO
+        , B.DEPOSIT_DT
+        , B.DEPOSIT_ACCOUNT) AS C
+GROUP BY C.SAL_DT_ISSUE_DATE
+, C.SAL_DT_SUM_ACCOUNT
+, C.DEPOSIT_ACCOUNT
+, C.COMPANY_NO
+, C.DEPOSIT_DT
+ORDER BY C.SAL_DT_ISSUE_DATE DESC
+]]></select>-->
+<!--////업체별매출 상세조회-->
+
+<!--매출현황 조회 Top-->
+<select id="getCompanySalesListTop" parameterType="SalesDetailsManagementVO" resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT A.SAL_DT_ISSUE_DATE                                AS SAL_DT_ISSUE_DATE
+     , SUM(A.SAL_DT_BUSINESS_NO)                          AS COMPANY_CNT
+     , SUM(A.SAL_DT_SUM_ACCOUNT)                          AS SUM_ACCOUNT
+     , SUM(A.DEPOSIT_ACCOUNT)                             AS DEPOSIT_ACCOUNT
+     , SUM(A.DEPOSIT_ACCOUNT) - SUM(A.SAL_DT_SUM_ACCOUNT) AS UNPAID_AMOUNT
+FROM (
+         SELECT COUNT(SD.SAL_DT_BUSINESS_NO) AS SAL_DT_BUSINESS_NO
+              , CM.COMPANY_NO
+              , REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER AS SAL_DT_SUM_ACCOUNT
+              , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) AS SAL_DT_ISSUE_DATE
+              , REPLACE(DD.DEPOSIT_ACCOUNT, '.', '') ::INTEGER AS DEPOSIT_ACCOUNT
+         FROM SALES_DETAIL AS SD
+                  LEFT JOIN COMPANY AS CM ON SD.SAL_DT_BUSINESS_NO = CM.BUSINESS_NO
+                  LEFT JOIN DEPOSIT_DETAIL AS DD ON CM.COMPANY_NO = DD.COMPANY_NO
+         WHERE SD.SITE_NO IS NOT NULL
+           AND SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) = SPLIT_PART(NOW()::VARCHAR, '-', 1)
+         GROUP BY SD.SAL_DT_BUSINESS_NO
+                , CM.COMPANY_NO
+                , SD.SAL_DT_SUM_ACCOUNT
+                , SD.SAL_DT_ISSUE_DATE
+                , DD.DEPOSIT_ACCOUNT) AS A
+GROUP BY A.SAL_DT_ISSUE_DATE
+]]></select>
+<!--////매출현황 조회 Top-->
+
+<!--20220118 backup-->
+<!--매출현황 조회 Top-->
+<!--<select id="getCompanySalesListTop" parameterType="SalesDetailsManagementVO" resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT COUNT(B.SAL_DT_BUSINESS_NO)                   AS COMPANY_CNT
+ , B.SAL_DT_ISSUE_DATE                           AS SAL_DT_ISSUE_DATE
+ , SUM(B.SAL_DT_SUM_ACCOUNT)                     AS SUM_ACCOUNT
+ , C.DEPOSIT_ACCOUNT                             AS DEPOSIT_ACCOUNT
+ , C.DEPOSIT_ACCOUNT - SUM(B.SAL_DT_SUM_ACCOUNT) AS UNPAID_AMOUNT
+FROM (
+     SELECT A.SAL_DT_BUSINESS_NO
+          , SUM(A.SAL_DT_SUM_ACCOUNT) AS SAL_DT_SUM_ACCOUNT
+          , A.SAL_DT_ISSUE_DATE
+          , A.COMPANY_NO
+     FROM (
+              SELECT SD.SAL_DT_BUSINESS_NO
+                   , CM.COMPANY_NO
+                   , SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER) AS SAL_DT_SUM_ACCOUNT
+                   , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1)              AS SAL_DT_ISSUE_DATE
+              FROM SALES_DETAIL AS SD
+                       LEFT JOIN COMPANY AS CM ON SD.SAL_DT_BUSINESS_NO = CM.BUSINESS_NO
+              WHERE SD.SITE_NO IS NOT NULL
+                AND SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) = SPLIT_PART(NOW()::VARCHAR, '-', 1)
+              GROUP BY SD.SAL_DT_BUSINESS_NO
+                     , CM.COMPANY_NO
+                     , SD.SAL_DT_ISSUE_DATE) AS A
+     GROUP BY A.SAL_DT_BUSINESS_NO
+            , A.SAL_DT_ISSUE_DATE
+            , A.COMPANY_NO) AS B
+     LEFT JOIN (SELECT P.DEPOSIT_DT
+                     , SUM(P.DEPOSIT_ACCOUNT) AS DEPOSIT_ACCOUNT
+                FROM (SELECT SPLIT_PART(dd.DEPOSIT_DT, '-', 1)                  AS DEPOSIT_DT
+                           , SUM(REPLACE(dd.DEPOSIT_ACCOUNT, '.', '')::INTEGER) AS DEPOSIT_ACCOUNT
+                      FROM DEPOSIT_DETAIL AS DD
+                               LEFT JOIN COMPANY AS CM ON dd.COMPANY_NO = CM.COMPANY_NO
+                      WHERE dd.COMPANY_NO IS NOT NULL
+                        AND SPLIT_PART(dd.DEPOSIT_DT, '-', 1) = SPLIT_PART(NOW()::VARCHAR, '-', 1)
+                      GROUP BY DEPOSIT_DT) AS P
+                GROUP BY P.DEPOSIT_DT) AS C ON B.SAL_DT_ISSUE_DATE = C.DEPOSIT_DT
+GROUP BY B.SAL_DT_ISSUE_DATE
+   , C.DEPOSIT_ACCOUNT
+]]></select>-->
+<!--////매출현황 조회 Top-->
+
+<!--매출현황 조회-->
+<select id="getCompanySalesList" parameterType="SalesDetailsManagementVO" resultType="SalesDetailsManagementVO"><![CDATA[
+SELECT PG.*
+FROM (
+         SELECT va.*
+              , ROW_NUMBER() OVER() AS RNUM -- 페이징처리용 컬럼
+         FROM (SELECT B.SAL_DT_ISSUE_DATE                                                     AS   SAL_DT_ISSUE_DATE
+                    , B.COMPANY_NAME
+                    , B.COMPANY_NO
+                    , B.SAL_DT_SUM_ACCOUNT                                                    AS   SUM_ACCOUNT
+                    , C.DEPOSIT_ACCOUNT                                                       AS   DEPOSIT_ACCOUNT
+                    , COALESCE(C.DEPOSIT_ACCOUNT, 0) - COALESCE(SUM(B.SAL_DT_SUM_ACCOUNT), 0) AS   UNPAID_AMOUNT
+                    , SUM(U.SITE_CNT)                                                         AS   SITE_CNT
+                    , SUM(COALESCE(C.DEPOSIT_ACCOUNT, 0) - COALESCE(SUM(B.SAL_DT_SUM_ACCOUNT), 0)) OVER( ORDER BY B.COMPANY_NAME DESC) AS CUMULATIVE_SUM
+    , COUNT(*) OVER() AS TOTAL_RECORD_COUNT -- 페이징처리용 컬럼
+               FROM (
+                        SELECT A.SAL_DT_BUSINESS_NO
+                             , SUM(A.SAL_DT_SUM_ACCOUNT) AS SAL_DT_SUM_ACCOUNT
+                             , A.SAL_DT_ISSUE_DATE
+                             , A.COMPANY_NO
+                             , A.COMPANY_NAME
+                        FROM (
+                                 SELECT SD.SAL_DT_BUSINESS_NO
+                                      , CM.COMPANY_NO
+                                      , CM.COMPANY_NAME
+                                      , SUM(REPLACE(SD.SAL_DT_SUM_ACCOUNT, '.', '')::INTEGER) AS SAL_DT_SUM_ACCOUNT
+                                      , SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1)              AS SAL_DT_ISSUE_DATE
+                                 FROM SALES_DETAIL AS SD
+                                          LEFT JOIN COMPANY AS CM ON SD.SAL_DT_BUSINESS_NO = CM.BUSINESS_NO
+                                 WHERE SD.SITE_NO IS NOT NULL
+                                   AND SPLIT_PART(SD.SAL_DT_ISSUE_DATE, '-', 1) =
+                                       SPLIT_PART(NOW()::VARCHAR, '-', 1)
+                                 GROUP BY SD.SAL_DT_BUSINESS_NO
+                                        , CM.COMPANY_NO
+                                        , CM.COMPANY_NAME
+                                        , SD.SAL_DT_ISSUE_DATE) AS A
+                        GROUP BY A.SAL_DT_BUSINESS_NO
+                               , A.SAL_DT_ISSUE_DATE
+                               , A.COMPANY_NO
+                               , A.COMPANY_NAME) AS B
+                        LEFT JOIN (
+                   SELECT M.DEPOSIT_DT
+                        , SUM(M.DEPOSIT_ACCOUNT) AS DEPOSIT_ACCOUNT
+                        , M.COMPANY_NO
+                   FROM (SELECT SPLIT_PART(dd.DEPOSIT_DT, '-', 1)                  AS DEPOSIT_DT
+                              , SUM(REPLACE(dd.DEPOSIT_ACCOUNT, '.', '')::INTEGER) AS DEPOSIT_ACCOUNT
+                              , CM.COMPANY_NO
+                         FROM DEPOSIT_DETAIL AS DD
+                                  LEFT JOIN COMPANY AS CM ON dd.COMPANY_NO = CM.COMPANY_NO
+                         WHERE dd.COMPANY_NO IS NOT NULL
+                           AND SPLIT_PART(dd.DEPOSIT_DT, '-', 1) = SPLIT_PART(NOW()::VARCHAR, '-', 1)
+                         GROUP BY DEPOSIT_DT
+                                , CM.COMPANY_NO) AS M
+                   GROUP BY M.DEPOSIT_DT
+                          , M.COMPANY_NO
+               ) AS C ON B.COMPANY_NO = C.COMPANY_NO
+                        LEFT JOIN (SELECT COUNT(SITE_NO) AS SITE_CNT, ST.COMPANY_NO
+                                   FROM SITE AS ST
+                                   WHERE st.site_state = '01'
+                                   GROUP BY ST.COMPANY_NO) AS U ON U.COMPANY_NO = B.COMPANY_NO
+               WHERE SITE_CNT IS NOT NULL
+               GROUP BY B.SAL_DT_ISSUE_DATE
+                      , B.COMPANY_NAME
+                      , B.COMPANY_NO
+                      , B.SAL_DT_SUM_ACCOUNT
+                      , C.DEPOSIT_ACCOUNT
+               ORDER BY B.COMPANY_NAME
+              ) AS VA
+             LIMIT #{endRownum, jdbcType=NUMERIC}
+     ) AS PG
+WHERE RNUM BETWEEN #{startRownum, jdbcType=NUMERIC} AND #{endRownum, jdbcType=NUMERIC}
+]]></select>
+<!--////매출현황 조회-->
+
+</mapper>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inface.infaceCBP.mapper.FacilityOperationManagementMapper">
+<!--시설내역정보를 수정-->
+<update id="siteFacilityUpdate" parameterType="FacilityOperationManagementVO"><![CDATA[
+UPDATE FACILITY_INFO
+SET COMPANY_NO             = #{companyNo}
+  , SITE_NO                = #{siteNo}
+  , SUBCONTRACTOR_CM_NO    = #{subcontractorCmNo}
+  , FACILITY_USE_STATE     = #{facilityUseState}
+  , FACILITY_REQ_CONTENT   = #{facilityReqContent}
+  , FACILITY_REQ_DATE      = #{facilityReqDate}
+  , FACILITY_MANAGER       = #{facilityManager}
+  , FACILITY_MANAGER_PHONE = #{facilityManagerPhone}
+  , FACILITY_ACCOUNT       = #{facilityAccount}
+  , PAYMENT_ACCOUNT        = #{paymentAccount} FROM
+    (SELECT A.*, A.RNUM
+    FROM (SELECT COALESCE(FI.COMPANY_NO, 0)                              AS COMPANY_NO
+              , COALESCE(CM.COMPANY_NAME, NULL)                          AS COMPANY_NAME
+              , COALESCE(FI.SITE_NO, 0)                                  AS SITE_NO
+              , COALESCE(ST.SITE_NAME, NULL)                             AS SITE_NAME
+              , COALESCE(FI.SUBCONTRACTOR_CM_NO, 0)                      AS SUBCONTRACTOR_CM_NO
+              , COALESCE(SUB.SUBCONTRACTOR_CM_NM, NULL)                  AS SUBCONTRACTOR_CM_NM
+              , COALESCE(FI.FACILITY_INFO_NO, 0)                         AS FACILITY_INFO_NO
+              , COALESCE(FI.FACILITY_USE_STATE, NULL)                    AS FACILITY_USE_STATE
+              , COALESCE(FI.FACILITY_REQ_CONTENT, NULL)                  AS FACILITY_REQ_CONTENT
+              , COALESCE(FI.FACILITY_REQ_DATE, NULL)                     AS FACILITY_REQ_DATE
+              , COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 1), NULL) AS DYEAR
+              , COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 2), NULL) AS DMM
+              , COALESCE(FI.FACILITY_MANAGER, NULL)                      AS FACILITY_MANAGER
+              , COALESCE(FI.FACILITY_MANAGER_PHONE, NULL)                AS FACILITY_MANAGER_PHONE
+              , COALESCE(FI.FACILITY_ACCOUNT, 0)                         AS FACILITY_ACCOUNT
+              , COALESCE(FI.PAYMENT_ACCOUNT, 0)                          AS PAYMENT_ACCOUNT
+              , COALESCE(FI.CREATE_DT, NULL)                             AS CREATE_DT
+              , ROW_NUMBER()                                                OVER(ORDER BY FI.CREATE_DT DESC) AS RNUM
+         FROM FACILITY_INFO AS FI
+                  LEFT JOIN COMPANY AS CM ON CM.COMPANY_NO = FI.COMPANY_NO
+                  LEFT JOIN SITE AS ST ON ST.SITE_NO = FI.SITE_NO
+                  LEFT JOIN SUBCONTRACTOR_COMPANY AS SUB ON SUB.SUBCONTRACTOR_CM_NO = FI.SUBCONTRACTOR_CM_NO
+         WHERE FI.COMPANY_NO IS NOT NULL
+         GROUP BY FI.COMPANY_NO
+                , CM.COMPANY_NAME
+                , FI.SITE_NO
+                , ST.SITE_NAME
+                , FI.SUBCONTRACTOR_CM_NO
+                , SUB.SUBCONTRACTOR_CM_NM
+                , FI.FACILITY_INFO_NO
+                , FI.FACILITY_USE_STATE
+                , FI.FACILITY_REQ_CONTENT
+                , FI.FACILITY_REQ_DATE
+                , FI.FACILITY_MANAGER
+                , FI.FACILITY_MANAGER_PHONE
+                , FI.FACILITY_ACCOUNT
+                , FI.PAYMENT_ACCOUNT
+                , FI.CREATE_DT) AS A
+    WHERE A.RNUM = #{detailNo}) AS B
+WHERE FACILITY_INFO.FACILITY_INFO_NO = B.FACILITY_INFO_NO
+]]></update>
+<!--////시설내역정보를 수정-->
+
+<!--시설내역 상세 정보-->
+<select id="getFacilityInfoDetail" parameterType="FacilityOperationManagementVO"
+    resultType="FacilityOperationManagementVO"><![CDATA[
+SELECT A.*, A.RNUM
+FROM (
+         SELECT COALESCE(FI.COMPANY_NO, 0)                               AS COMPANY_NO
+              , COALESCE(CM.COMPANY_NAME, NULL)                          AS COMPANY_NAME
+              , COALESCE(FI.SITE_NO, 0)                                  AS SITE_NO
+              , COALESCE(ST.SITE_NAME, NULL)                             AS SITE_NAME
+              , COALESCE(FI.SUBCONTRACTOR_CM_NO, 0)                      AS SUBCONTRACTOR_CM_NO
+              , COALESCE(SUB.SUBCONTRACTOR_CM_NM, NULL)                  AS SUBCONTRACTOR_CM_NM
+              , COALESCE(FI.FACILITY_USE_STATE, NULL)                    AS FACILITY_USE_STATE
+              , COALESCE(FI.FACILITY_REQ_CONTENT, NULL)                  AS FACILITY_REQ_CONTENT
+              , COALESCE(FI.FACILITY_REQ_DATE, NULL)                     AS FACILITY_REQ_DATE
+              , COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 1), NULL) AS DYEAR
+              , COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 2), NULL) AS DMM
+              , COALESCE(FI.FACILITY_MANAGER, NULL)                      AS FACILITY_MANAGER
+              , COALESCE(FI.FACILITY_MANAGER_PHONE, NULL)                AS FACILITY_MANAGER_PHONE
+              , COALESCE(FI.FACILITY_ACCOUNT, 0)                         AS FACILITY_ACCOUNT
+              , COALESCE(FI.PAYMENT_ACCOUNT, 0)                          AS PAYMENT_ACCOUNT
+              , COALESCE(FI.CREATE_DT, NULL)                             AS CREATE_DT
+              , ROW_NUMBER()                                                OVER(ORDER BY FI.CREATE_DT DESC) AS RNUM
+         FROM FACILITY_INFO AS FI
+                  LEFT JOIN COMPANY AS CM ON CM.COMPANY_NO = FI.COMPANY_NO
+                  LEFT JOIN SITE AS ST ON ST.SITE_NO = FI.SITE_NO
+                  LEFT JOIN SUBCONTRACTOR_COMPANY AS SUB ON SUB.SUBCONTRACTOR_CM_NO = FI.SUBCONTRACTOR_CM_NO
+         WHERE FI.COMPANY_NO IS NOT NULL
+         GROUP BY FI.COMPANY_NO
+                , CM.COMPANY_NAME
+                , FI.SITE_NO
+                , ST.SITE_NAME
+                , FI.SUBCONTRACTOR_CM_NO
+                , SUB.SUBCONTRACTOR_CM_NM
+                , FI.FACILITY_USE_STATE
+                , FI.FACILITY_REQ_CONTENT
+                , FI.FACILITY_REQ_DATE
+                , FI.FACILITY_MANAGER
+                , FI.FACILITY_MANAGER_PHONE
+                , FI.FACILITY_ACCOUNT
+                , FI.PAYMENT_ACCOUNT
+                , FI.CREATE_DT
+         ORDER BY CREATE_DT) AS A
+WHERE A.RNUM = #{detailNo}
+]]></select>
+<!--////시설내역 상세 정보-->
+
+<!--현장의시설등록-->
+<insert id="siteFacilityRegist" parameterType="FacilityOperationManagementVO"><![CDATA[
+INSERT INTO FACILITY_INFO
+( FACILITY_INFO_NO
+, COMPANY_NO
+, SITE_NO
+, SUBCONTRACTOR_CM_NO
+, FACILITY_USE_STATE
+, FACILITY_REQ_CONTENT
+, FACILITY_REQ_DATE
+, FACILITY_MANAGER
+, FACILITY_MANAGER_PHONE
+, FACILITY_ACCOUNT
+, PAYMENT_ACCOUNT
+, CREATE_DT)
+    (SELECT COALESCE(MAX(FACILITY_INFO_NO), 0) + 1
+          , #{companyNo}
+          , #{siteNo}
+          , #{subcontractorCmNo}
+          , #{facilityUseState}
+          , #{facilityReqContent}
+          , #{facilityReqDate}
+          , #{facilityManager}
+          , #{facilityManagerPhone}
+          , #{facilityAccount}
+          , #{paymentAccount}
+          , NOW()
+     FROM FACILITY_INFO)
+]]></insert>
+<!--////현장의시설등록-->
+
+<!--시설정보 리스트-->
+<select id="getFacilityInfoList" parameterType="FacilityOperationManagementVO"
+    resultType="FacilityOperationManagementVO"><![CDATA[
+SELECT PG.*
+FROM (
+         SELECT VA.*
+              , ROW_NUMBER() OVER(ORDER BY VA.CREATE_DT DESC) AS RNUM -- 페이징처리용 컬럼
+         FROM (SELECT COALESCE(FI.COMPANY_NO, 0)                               AS COMPANY_NO
+                    , COALESCE(CM.COMPANY_NAME, NULL)                          AS COMPANY_NAME
+                    , COALESCE(FI.SITE_NO, 0)                                  AS SITE_NO
+                    , COALESCE(ST.SITE_NAME, NULL)                             AS SITE_NAME
+                    , COALESCE(FI.SUBCONTRACTOR_CM_NO, 0)                      AS SUBCONTRACTOR_CM_NO
+                    , COALESCE(SUB.SUBCONTRACTOR_CM_NM, NULL)                  AS SUBCONTRACTOR_CM_NM
+                    , COALESCE(FI.FACILITY_USE_STATE, NULL)                    AS FACILITY_USE_STATE
+                    , COALESCE(FI.FACILITY_REQ_CONTENT, NULL)                  AS FACILITY_REQ_CONTENT
+                    , COALESCE(FI.FACILITY_REQ_DATE, NULL)                     AS FACILITY_REQ_DATE
+                    , COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 1), NULL) AS DYEAR
+                    , COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 2), NULL) AS DMM
+                    , COALESCE(FI.FACILITY_MANAGER, NULL)                      AS FACILITY_MANAGER
+                    , COALESCE(FI.FACILITY_MANAGER_PHONE, NULL)                AS FACILITY_MANAGER_PHONE
+                    , COALESCE(FI.FACILITY_ACCOUNT, 0)                         AS FACILITY_ACCOUNT
+                    , COALESCE(FI.PAYMENT_ACCOUNT, 0)                          AS PAYMENT_ACCOUNT
+                    , COALESCE(FI.CREATE_DT, NULL)                             AS CREATE_DT
+                    , COUNT(*) OVER() AS TOTAL_RECORD_COUNT -- 페이징처리용 컬럼
+               FROM FACILITY_INFO AS FI
+                        LEFT JOIN COMPANY AS CM ON CM.COMPANY_NO = FI.COMPANY_NO
+                        LEFT JOIN SITE AS ST ON ST.SITE_NO = FI.SITE_NO
+                        LEFT JOIN SUBCONTRACTOR_COMPANY AS SUB  ON SUB.SUBCONTRACTOR_CM_NO = FI.SUBCONTRACTOR_CM_NO
+               WHERE FI.COMPANY_NO IS NOT NULL]]>
+<if test="searchFacilityUseState != null and !''.equals(searchFacilityUseState)">
+    AND FI.FACILITY_USE_STATE = #{searchFacilityUseState, jdbcType=VARCHAR}
+</if>
+<if test="searchYear != null and !''.equals(searchYear)">
+    AND COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 1), NULL) = #{searchYear, jdbcType=VARCHAR}
+</if>
+<if test="searchMonth != null and !''.equals(searchMonth)">
+    AND COALESCE(SPLIT_PART(FI.FACILITY_REQ_DATE, '-', 2), NULL) = #{searchMonth, jdbcType=VARCHAR}
+</if>
+<if test="searchCompanyNo != 0 and !''.equals(searchCompanyNo)">
+    AND FI.COMPANY_NO = #{searchCompanyNo, jdbcType=VARCHAR}
+</if><![CDATA[
+               GROUP BY FI.COMPANY_NO
+                      , CM.COMPANY_NAME
+                      , FI.SITE_NO
+                      , ST.SITE_NAME
+                      , FI.SUBCONTRACTOR_CM_NO
+                      , SUB.subcontractor_cm_nm
+                      , FI.FACILITY_USE_STATE
+                      , FI.FACILITY_REQ_CONTENT
+                      , FI.FACILITY_REQ_DATE
+                      , FI.FACILITY_MANAGER
+                      , FI.FACILITY_MANAGER_PHONE
+                      , FI.FACILITY_ACCOUNT
+                      , FI.PAYMENT_ACCOUNT
+                      , FI.CREATE_DT
+               ORDER BY CREATE_DT) AS VA
+             LIMIT #{endRownum, jdbcType=NUMERIC}) AS PG
+WHERE RNUM BETWEEN #{startRownum, jdbcType=NUMERIC} AND #{endRownum, jdbcType=NUMERIC}]]>
+<if test="detailNo != 0 and !''.equals(detailNo) and detailNo != null">
+    AND RNUM = #{detailNo, jdbcType=VARCHAR}
+</if><![CDATA[
+ORDER BY RNUM
+]]>
+</select>
+<!--////시설정보 리스트-->
+</mapper>

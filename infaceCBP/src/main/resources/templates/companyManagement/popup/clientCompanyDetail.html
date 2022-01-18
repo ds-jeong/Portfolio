@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout/layoutPopup}">
+<th:block layout:fragment="contentFragment">
+    <body>
+    <script>
+        $(function () {
+
+            $(".save").on("click", function () {
+               if(!$("input[name='branchOfficeWhethe']:checked").val()){
+                    alert("지점여부를 체크해주세요");
+                    return false;
+                }else if (!$("input[name='businessNo']").val()) {
+                    alert("사업자등록번호를 입력해주세요");
+                    return false;
+                } else if (!$("input[name='companyName']").val()) {
+                    alert("업체명을 입력해주세요");
+                    return false;
+                }else {
+                    let email = $("input[name='email']").val();
+                    if(checkEmail(email)==false){
+                        alert("이메일을 다시 입력해주세요.")
+                        return false;
+                    }else {
+                        let formData = new FormData($("form")[0]);
+                        formData.append("nullChkValue","nullChkValue");
+                        formData.append("branchOfficeWhethe", $("input[name='branchOfficeWhethe']:checked").val());
+                        if ($("input[name='tel1']").val() != null && $("input[name='tel2']").val() != null && $("input[name='tel3']").val() != null) {
+                            formData.append("tel", $("input[name='tel1']").val().concat("-", $("input[name='tel2']").val()).concat("-", $("input[name='tel3']").val()));
+                        }else{
+                            formData.append("tel", "");
+                        }
+                        $.ajax({
+                            url: "/clientCompanyUpdate",
+                            type: "post",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+                                //alert("success");
+                                opener.parent.location.reload(); //부모창 리로드
+                                fnWindowPopupClose(); //현재창닫기
+                            }, error: function () {
+                                alert("error");
+                            }
+                        });
+                    }
+                }
+            });
+
+            $(".cancel").on("click", function () {
+               fnWindowPopupClose();
+            });
+
+        });
+    </script>
+    <style>
+        .hTable .essentialValue {
+            color: red;
+        }
+    </style>
+    <div class="popup_frame" style="width:600px;">
+        <h1 class="popup_title">
+            거래처 상세 정보
+            <a href="#" class="popup_close" onclick="fnWindowPopupClose()">닫기</a>
+        </h1>
+        <!-- popup content -->
+        <div class="pop_content">
+            <div class="pop_table">
+                <form>
+                <table class="hTable">
+                    <th:block th:each="list:${list}">
+                        <tr>
+                            <th class="essentialValue">* 지점여부</th>
+                            <td>
+                                <input type="radio" id="company0" name="branchOfficeWhethe" th:checked="${list.branchOfficeWhethe}==0" value="0">
+                                <label for="company0">본사</label>
+                                <input type="radio" id="company1" name="branchOfficeWhethe" th:checked="${list.branchOfficeWhethe}==1"value="1">
+                                <label for="company1">지점</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="essentialValue">* 사업자등록번호</th>
+                            <td><input type="text" th:value="${list.businessNo}" value="" class="t_inp" name="businessNo"/></td>
+                        </tr>
+                        <tr>
+                            <th class="essentialValue">* 업체명</th>
+                            <td><input type="text" th:value="${list.companyName}" value="" class="t_inp" name="companyName"/></td>
+                        </tr>
+                        <tr>
+                            <th>대표자명</th>
+                            <td><input type="text" th:value="${list.ceoName}" value="" class="t_inp" name="ceoName"/></td>
+                        </tr>
+                        <tr>
+                            <th>사업자주소</th>
+                            <td><input type="text" th:value="${list.roadAddress}" value="" class="t_inp" name="roadAddress"/></td>
+                        </tr>
+                        <tr>
+                            <th>업태</th>
+                            <td><input type="text" th:value="${list.businessType}" value="" class="t_inp" name="businessType"/></td>
+                        </tr>
+                        <tr>
+                            <th>종목</th>
+                            <td><input type="text" th:value="${list.industry}" value="" class="t_inp" name="industry"/></td>
+                        </tr>
+                        <tr>
+                            <th>이메일</th>
+                            <td><input type="text" th:value="${list.email}" value="" class="t_inp" name="email"/></td>
+                        </tr>
+                        <tr>
+                            <th>연락처</th>
+                            <td class="hp">
+                                <input type="text" th:value="${list.tel1}" value="" class="t_inp" name="tel1"
+                                       onkeydown="return checkNumber(event);" placeholder="010"/> -
+                                <input type="text" th:value="${list.tel2}" value="" class="t_inp" name="tel2"
+                                       onkeydown="return checkNumber(event);"/> -
+                                <input type="text" th:value="${list.tel3}" value="" class="t_inp" name="tel3"
+                                       onkeydown="return checkNumber(event);"/>
+                            </td>
+                        </tr>
+                    </th:block>
+                    <!--<input type="hidden" th:value="${companyGroupNo}" name="companyGroupNo"/>-->
+                    <input type="hidden" th:value="${companyNo}" name="companyNo"/>
+                </table>
+                </form>
+            </div>
+        </div>
+        <!-- Pop Button -->
+        <div class="pop_btns">
+            <a href="#" class="BTNS icon cancel"><span>취소</span></a>
+            <a href="#" class="BTNS icon save"><span>저장</span></a>
+        </div>
+    </div>
+    </body>
+</th:block>

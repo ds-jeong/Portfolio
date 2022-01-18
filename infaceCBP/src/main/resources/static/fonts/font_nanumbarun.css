@@ -1,0 +1,58 @@
+/* 
+ * Nanum Barun Gothic Web Fonts
+ * https://github.com/hiun/NanumBarunGothic
+ * Copyright (c) 2010, NAVER Corporation (http://www.nhncorp.com) 
+ */
+ 
+@font-face {
+  font-family: 'Nanum Barun Gothic';
+  font-style: normal;
+  font-weight: 200;
+  src: url(./nanumbarun/NanumBarunGothicUltraLight.eot);
+  src: local('Nanum Barun Gothic UltraLight'),
+       local('NanumBarunGothicUltraLight'),
+       url(./nanumbarun/NanumBarunGothicUltraLight.eot?#iefix) format('embedded-opentype'),
+       url(./nanumbarun/NanumBarunGothicUltraLight.woff2) format('woff2'),
+       url(./nanumbarun/NanumBarunGothicUltraLight.woff) format('woff'),
+       url(./nanumbarun/NanumBarunGothicUltraLight.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nanum Barun Gothic';
+  font-style: normal;
+  font-weight: 300;
+  src: url(./nanumbarun/NanumBarunGothicLight.eot);
+  src: local('Nanum Barun Gothic Light'),
+       local('NanumBarunGothicLight'),
+       url(./nanumbarun/NanumBarunGothicLight.eot?#iefix) format('embedded-opentype'),
+       url(./nanumbarun/NanumBarunGothicLight.woff2) format('woff2'),
+       url(./nanumbarun/NanumBarunGothicLight.woff) format('woff'),
+       url(./nanumbarun/NanumBarunGothicLight.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nanum Barun Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./nanumbarun/NanumBarunGothic.eot);
+  src: local('Nanum Barun Gothic'),
+       local('NanumBarunGothic'),
+       url(./nanumbarun/NanumBarunGothic.eot?#iefix) format('embedded-opentype'),
+       url(./nanumbarun/NanumBarunGothic.woff2) format('woff2'),
+       url(./nanumbarun/NanumBarunGothic.woff) format('woff'),
+       url(./nanumbarun/NanumBarunGothic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nanum Barun Gothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url(./nanumbarun/NanumBarunGothicBold.eot);
+  src: local('Nanum Barun Gothic Bold'),
+       local('NanumBarunGothicBold'),
+       url(./nanumbarun/NanumBarunGothicBold.eot?#iefix) format('embedded-opentype'),
+       url(./nanumbarun/NanumBarunGothicBold.woff2) format('woff2'),
+       url(./nanumbarun/NanumBarunGothicBold.woff) format('woff'),
+       url(./nanumbarun/NanumBarunGothicBold.ttf) format('truetype');
+}
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout/layoutPopup}">
+<th:block layout:fragment="contentFragment">
+    <body>
+    <script>
+        $(function () {
+
+            $(".save").on("click", function () {
+                if (!$("input[name='deviceState']:checked").val()) {
+                    alert("사용여부를 선택해주세요");
+                    return false;
+                } else if (!$("#deviceKind option:selected").val()) {
+                    alert("단말기 종류를 선택해주세요");
+                    return false;
+                } else {
+                    let formData = new FormData($("form")[0]);
+                    formData.append("nullChkValue", "nullChkValue");
+                    $.ajax({
+                        url: "/deviceRegist",
+                        type: "post",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            alert("등록되었습니다.");
+                            opener.parent.location.reload(); //부모창 리로드
+                            fnWindowPopupClose(); //현재창닫기
+                        }, error: function () {
+                            alert("error");
+                        }
+                    });
+                }
+            });
+
+            $(".cancel").on("click", function () {
+                fnWindowPopupClose();
+            });
+
+        });
+    </script>
+    <style>
+        .hTable .essentialValue {
+            color: red;
+        }
+    </style>
+    <div class="popup_frame" style="width:600px;">
+        <h1 class="popup_title">
+            단말기 신규 등록
+            <a href="#" class="popup_close" onclick="fnWindowPopupClose()">닫기</a>
+        </h1>
+        <!-- popup content -->
+        <div class="pop_content">
+            <div class="pop_table">
+                <form>
+                    <table class="hTable">
+                        <tr>
+                            <th class="essentialValue">* 사용여부</th>
+                            <td>
+                                <input type="radio" id="deviceState01" name="deviceState" value="01"/>
+                                <label for="deviceState01">사용</label>
+                                <input type="radio" id="deviceState02" name="deviceState" value="02"/>
+                                <label for="deviceState02">폐기</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="essentialValue">* 단말기 종류</th>
+                            <td>
+                                <select class="t_select" id="deviceKind" name="deviceKindNo">
+                                    <option value="">단말기종류를 선택해주세요.</option>
+                                    <th:block th:each="list:${deviceKindlist}">
+                                         <option th:selected="${param.deviceKindNo}==${list.deviceKindNo}" th:value="${list.deviceKindNo}" th:text="${list.deviceKind}"></option>
+                                     </th:block>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>단말기 NO(S/N)</th>
+                            <td><input type="text" value="" class="t_inp" name="deviceSn"/></td>
+                        </tr>
+                        <tr>
+                            <th>현재위치</th>
+                            <td><input type="text" value="" class="t_inp" name="deviceLoca"/></td>
+                        </tr>
+                        <tr>
+                            <th>비고</th>
+                            <td><input type="text" value="" class="t_inp" name="deviceNote"/></td>
+                        </tr>
+                        <tr>
+                            <th>구매일</th>
+                            <td><input type="date" value="" class="t_inp" name="devicePurchaseDate"/></td>
+                        </tr>
+                        <tr>
+                            <th>등록일</th>
+                            <td><input type="date" value="" class="t_inp" name="deviceRegistDate"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <!-- Pop Button -->
+        <div class="pop_btns">
+            <a href="#" class="BTNS icon cancel"><span>취소</span></a>
+            <a href="#" class="BTNS icon save"><span>저장</span></a>
+        </div>
+    </div>
+    </body>
+</th:block>

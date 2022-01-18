@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout/layout}">
+<th:block layout:fragment="contentFragment" th:inline="javascript">
+    <script>
+        $(function (){
+
+            /*<![CDATA[*/
+            let searchYear = /*[[ ${searchParam.searchYear} ]]*/ "";
+            let searchMonth = /*[[ ${searchParam.searchMonth} ]]*/ "";
+            let now = new Date();
+            let nyear = now.getFullYear();
+            let nmon = (now.getMonth() + 1) > 9 ? '' + (now.getMonth() + 1) : '0' + (now.getMonth() + 1);
+
+            //년도 selectbox만들기
+            for (let sy = 2016; sy <= nyear; sy++) {
+                $('#searchYear').append('<option value="' + sy + '" ' + ((sy == searchYear) ? "selected" : "") + ' >' + sy + '년</option>');
+            }
+            // 월별 selectbox 만들기
+            for (let i = 1; i <= 12; i++) {
+                let sm = i > 9 ? i : "0" + i;
+                $('#searchMonth').append('<option value="' + sm + '" ' + ((sm == searchMonth) ? "selected" : "") + '>' + sm + '월</option>');
+            }
+
+            //$("#searchYear  > option[value="+nyear+"]").attr("selected", "true");
+            //$("#searchMonth  > option[value="+nmon+"]").attr("selected", "true");
+
+            /*]]*/
+
+            $(".search").on("click", function () {
+                $("#searchForm").submit();
+            });
+            $(".reset").on("click", function () {
+                $('#searchFacilityUseState').find('option:first').attr('selected', 'selected');
+                $('#searchYear').find('option:first').attr('selected', 'selected');
+                $('#searchMonth').find('option:first').attr('selected', 'selected');
+                $('#searchCompanyNo').find('option:first').attr('selected', 'selected');
+                $("#searchForm").submit();
+            });
+        });
+    </script>
+    <!-- Content Area -->
+    <div class="PAGE_BODY">
+        <h1 class="page_title">시설내역관리</h1>
+        <div class="page_top">
+            <!-- Search Area -->
+            <form id="searchForm" method="post" action="/siteFacility">
+                <div class="con_search_box">
+                    <!-- Select -->
+                    <div class="search_inp_box">
+                        <!--<div class="date_inp">
+                            <i class="iconDate"></i>
+                            <input type="text" value="2020.12. 11" class="date_inp" />
+                            <span class="dtx">~</span>
+                            <i class="iconDate"></i>
+                            <input type="text" value="2020.12. 11" class="date_inp" />
+                        </div>-->
+                        <select class="top_inp" id="searchFacilityUseState" name="searchFacilityUseState">
+                            <option value="">확인여부</option>
+                            <option th:selected="${searchParam.searchFacilityUseState} == '00'">예정</option>
+                            <option th:selected="${searchParam.searchFacilityUseState} == '01'">완료</option>
+                            <option th:selected="${searchParam.searchFacilityUseState} == '02'">취소</option>
+                        </select>
+                        <select id="searchYear" name="searchYear" class="top_inp" style="width:130px;">
+                            <option value="">년도선택</option>
+                        </select>
+                        <select id="searchMonth" name="searchMonth" class="top_inp" style="width:130px;">
+                            <option value="">월 선택</option>
+                        </select>
+                        <select class="top_inp" id="searchCompanyNo" name="searchCompanyNo">
+                            <option value="0">업체선택</option>
+                            <th:block th:each="companyList:${companyList}">
+                                <option th:selected="${searchParam.searchCompanyNo} == ${companyList.companyNo}"
+                                        th:text="${companyList.companyName}" th:value="${companyList.companyNo}">업체선택
+                                </option>
+                            </th:block>
+                        </select>
+                        <!--<input type="text" placeholder="발주번호를 입력하세요" class="top_inp" />-->
+                        <a href="#" class="BTNS icon search"><span>검색</span></a>
+                        <a href="#" class="BTNS icon reset"><span>초기화</span></a>
+                    </div>
+                    <!-- Button Area -->
+                    <div class="fuc_btns_box">
+                        <a href="#" class="BTNS icon write" th:href="@{/siteFacilityRegist}"
+                           onClick="fnWindowPopupOpen(this.href, 'siteFacilityRegist', '600', '700', 'no'); return false;"><span>신규시설등록</span></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- //////////////////// Content List -->
+        <div class="LIST_BOX">
+            <!-- Search Result, buttons -->
+            <!--<div class="list_top_area">
+                <div class="list_search_result">
+                    <b>조회기간</b>2020년 12월
+                </div>
+                <div class="list_top_btn_box">
+                    <select>
+                        <option>전체보기</option>
+                    </select>
+                </div>
+            </div>-->
+            <!-- List Table -->
+            <div class="list_table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="sz_50">No</th>
+                        <th class="sz_100">진행상태</th>
+                        <th>연도</th>
+                        <th>월</th>
+                        <th>업체명</th>
+                        <th>현장명</th>
+                        <th>시설내역</th>
+                        <th>시설비용</th>
+                        <th>시설업체</th>
+                        <th>지급비용</th>
+                        <th>작업요청일</th>
+                        <th>시설정보등록일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="list:${pageList.resultList}">
+                        <tr>
+                            <td th:text="${list.rnum}">1</td>
+                            <td th:switch="${list.facilityUseState}">
+                                <span th:case="00">예정</span>
+                                <span th:case="01">완료</span>
+                                <span th:case="02">취소</span>
+                            </td>
+                            <td th:text="|${list.Dyear}년|">2021년</td>
+                            <td th:text="|${list.Dmm}월|">11월</td>
+                            <td th:text="${list.companyName}">원영건업(주)</td>
+                            <td th:text="${list.siteName}">호반-덕평 h1 클럽하우스</td>
+                            <td><a href="#" th:href="@{/siteFacliltyDetail(detailNo=${list.rnum}, companyNo=${list.companyNo})}"
+                                   onClick="fnWindowPopupOpen(this.href, 'siteFacliltyDetail', '600', '700', 'no'); return false;"
+                                   th:text="${list.facilityReqContent}">신규현장 설치</a></td>
+                            <td th:text="${#numbers.formatInteger(list.facilityAccount, 0 , 'COMMA')}">100,000</td>
+                            <td th:text="${list.subcontractorCmNm}">부산통신</td>
+                            <td th:text="${#numbers.formatInteger(list.paymentAccount, 0, 'COMMA')}">100,000</td>
+                            <td th:text="${list.facilityReqDate}">2021.11.01</td>
+                            <td th:text="${list.createDt}">2021.11.01</td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+            <th:block th:replace="_fragment/common :: pageNaviFragment"></th:block>
+        </div>
+    </div>
+    <!-- Content List //////////////////// -->
+</th:block>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>INFACE HUB 자재공금통합솔루션</title>
+		<link rel="stylesheet" href="../css/style_hub.css" type="text/css"/>
+		<link rel="stylesheet" href="../css/button.css" type="text/css"/>
+	</head>
+	<body>
+		<div class="popup_frame" style="width:1000px;">
+			<h1 class="popup_title">
+				자재 품목 입고 확인
+				<a href="#" class="popup_close">닫기</a>
+			</h1>
+			<!-- popup content -->
+			<div class="pop_content">
+				<!-- 발주 자재 품목 -->
+				<div class="list_top_area">
+					<div class="list_search_result">
+						<b>발주 자재 품목</b>
+					</div>
+					<div class="list_top_btn_box">
+						<!-- 버튼이 있는 경우 노출 -->
+					</div>
+				</div>
+				<div class="pop_info_top">
+					<table>
+						<thead>
+							<tr>
+								<th class="sz_100">상태</th>
+								<th>청구상세번호</th>
+								<th>품목</th>
+								<th>세부품목</th>
+								<th class="sz_60">단위</th>
+								<th class="sz_60">발주수량</th>
+								<th class="sz_60">납품수량</th>
+								<th class="sz_120">잔여수량</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>입고중</td>
+								<td>20-12140001-01</td>
+								<td>유로폼(고재)</td>
+								<td>450 * 500 * 1200</td>
+								<td>EA</td>
+								<td>1,000</td>
+								<td>500</td>
+								<td>10</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- 납품 이력 -->
+				<div class="list_top_area">
+					<div class="list_search_result">
+						<b>납품 이력</b>
+					</div>
+					<div class="list_top_btn_box">
+						<!-- 버튼이 있는 경우 노출 -->
+					</div>
+				</div>
+				<div class="pop_table">
+					<table>
+						<thead>
+							<tr>
+								<th>배차번호</th>
+								<th>납품확인일자</th>
+								<th class="sz_100">납품수량</th>
+								<th class="sz_100">잔여수량</th>
+								<th>확인담당자</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>21-01-0001</td>
+								<td>2020.12.31</td>
+								<td>300</td>
+								<td>500</td>
+								<td>홍길동 (010-8807-5439)</td>
+							</tr>
+							<tr>
+								<td>21-01-0001</td>
+								<td>2020.12.31</td>
+								<td><input type="text" value="500" class="t_inp center" /></td>
+								<td>-</td>
+								<td>홍길동 (010-8807-5439)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>				
+			</div>
+			<!-- Pop Button -->
+			<div class="pop_btns">
+				<a href="#" class="BTNS icon cancel"><span>취소</span></a>
+				<a href="#" class="BTNS icon cancel_gr"><span>잔여수량 취소</span></a>
+				<a href="#" class="BTNS icon save"><span>저장</span></a>
+			</div>
+		</div>
+	</body>
+</html>

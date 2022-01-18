@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout/layout}">
+<th:block layout:fragment="contentFragment">
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            /*<![CDATA[*/
+            let searchYear = /*[[ ${searchParam.searchYear} ]]*/ "";
+            let searchMonth = /*[[ ${searchParam.searchMonth} ]]*/ "";
+            let now = new Date();
+            let nyear = now.getFullYear();
+            let nmon = (now.getMonth()+1) > 9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+
+            //년도 selectbox만들기
+            for(let sy = 2016 ; sy <= nyear ; sy++) {
+                $('#fd_year').append('<option value="' + sy + '"' +( (sy == searchYear) ? "selected" : "")+'>' + sy + '년</option>');
+            }
+
+            // 월별 selectbox 만들기
+            for(let i=1; i <= 12; i++) {
+                let sm = i > 9 ? i : "0"+i ;
+                $('#fd_month').append('<option value="' + sm + '"' +( (sm == searchMonth) ? "selected" : "")+'>' + sm + '월</option>');
+            }
+
+            //$("#fd_year  > option[value="+nyear+"]").attr("selected", "true");
+            //$("#fd_month  > option[value="+nmon+"]").attr("selected", "true");
+
+            /*]]*/
+            let fileTarget = $('.fuc_btns_box .upload-hidden');
+            fileTarget.on('change', function () {
+                let filename;
+                // 값이 변경되면
+                if(window.FileReader){
+                    // modern browser
+                    filename = $(this)[0].files[0].name;
+                } else { // old IE
+                    filename = $(this).val().split('/').pop().split('\\').pop(); // 파일명만 추출
+                }
+                // 추출한 파일명 삽입
+                $(this).siblings('.upload-name').val(filename);
+                if ($(".depositExcelUpload").val() != "") {
+                    let formData = new FormData($("#depositExcelUploadFm")[0]);
+                    $.ajax({
+                        url: '/depositExcelUpload',
+                        type: 'post',
+                        enctype: 'multipart/form-data',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            alert("success");
+                            location.reload();
+                        },
+                        error: function () {
+                            alert("error");
+                        }
+                    });
+                }
+            });
+
+            $(".goDelete").on("click", function (){
+                let index = $(".goDelete").index(this);
+                let depositDtNo = $(".goDelete:eq("+ index +")").attr("depositDtNo");
+                //console.log(salDtNo);
+                $.ajax({
+                    url: "/depositExcelDelete",
+                    data: {depositDtNo : depositDtNo},
+                    type: "post",
+                    success: function(data){
+                        alert("success");
+                        location.reload();
+                    },error: function (){
+                        alert("error");
+                    }
+                });
+            });
+
+            $(".goSubmit").on("click", function (){
+                let index = $(".goSubmit").index(this);
+                let depositDtNo = $(".goSubmit:eq("+ index +")").attr("depositDtNo");
+                let companyNo = $(".t_select:eq("+index+") option:selected").val();
+                //console.log(depositDtNo);
+                //console.log(companyNo);
+                $.ajax({
+                    url: "/depositExcelSubmit",
+                    data: {depositDtNo : depositDtNo, companyNo : companyNo},
+                    type: "post",
+                    success: function(data){
+                        alert("success");
+                        location.reload();
+                    },error: function (){
+                        alert("업체명을 선택하고 저장해주세요.")
+                    }
+                });
+            });
+
+            $(".search").on("click", function () {
+                $("#searchFrm").submit();
+            });
+
+            $(".reset").on("click", function () {
+                $('#fd_year').find('option:first').attr('selected', 'selected');
+                $('#fd_month').find('option:first').attr('selected', 'selected');
+                $('#companyNo').find('option:first').attr('selected', 'selected');
+                $("#searchFrm").submit();
+            });
+
+        });
+    </script>
+    <style>
+        .fuc_btns_box input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .fuc_btns_box label {
+            display: inline-block;
+            padding: .5em .75em;
+            color: #999;
+            font-size: inherit;
+            line-height: normal;
+            vertical-align: middle;
+            background-color: #fdfdfd;
+            cursor: pointer;
+            border: 1px solid #ebebeb;
+            border-bottom-color: #e2e2e2;
+            border-radius: .25em;
+        }
+
+        /* named upload */
+        .fuc_btns_box .upload-name {
+            display: inline-block;
+            padding: .5em .75em; /* label의 패딩값과 일치 */
+            font-size: inherit;
+            font-family: inherit;
+            line-height: normal;
+            vertical-align: middle;
+            background-color: #f5f5f5;
+            border: 1px solid #ebebeb;
+            border-bottom-color: #e2e2e2;
+            border-radius: .25em;
+            -webkit-appearance: none; /* 네이티브 외형 감추기 */
+            -moz-appearance: none;
+            appearance: none;
+        }
+    </style>
+    <!-- Content Area -->
+    <div class="PAGE_BODY">
+        <div class="page_top">
+            <!-- Search Area -->
+            <div class="con_search_box">
+                <!-- Select -->
+                <form id="searchFrm" action="/depositRegistManagement" method="post">
+                    <div class="search_inp_box">
+                        <select id="fd_year" name="fd_year" class="top_inp" style="width:130px;">
+                            <option value="">년도선택</option>
+                        </select>
+                        <select id="fd_month" name="fd_month" class="top_inp" style="width:130px;">
+                            <option value="">월 선택</option>
+                        </select>
+                        <select id="companyNo" name="companyNo" class="top_inp">
+                            <option value="0">업체선택</option>
+                            <th:block th:each="companyList:${companyList}">
+                                <option th:selected="${searchParam.searchCompanyNo} == ${companyList.companyNo}" th:text="${companyList.companyName}" th:value="${companyList.companyNo}">업체선택</option>
+                            </th:block>
+                        </select>
+                        <a href="#" class="BTNS icon search"><span>검색</span></a>
+                        <a href="#" class="BTNS icon reset"><span>초기화</span></a>
+                    </div>
+                </form>
+                <!-- Button Area -->
+                <form id="depositExcelUploadFm">
+                <div class="fuc_btns_box">
+                    <input class="upload-name" value="파일선택" disabled="disabled">
+                    <label for="depositExcelUpload">업로드</label>
+                    <input type="file" id="depositExcelUpload"  name="depositExcelUpload" class="upload-hidden">
+                    <!--<input type="text" class="inputExcelFileName" disabled style="margin: 0 auto"/>
+                    <label for="excelUpload" class="input-file-button">업로드</label>
+                    <input type="file" id="excelUpload" class="excelUpload" name="excelUpload" style="display: none"/>-->
+                </div>
+                </form>
+                <!--<div class="fuc_btns_box">
+                    <input type="text" class="inputExcelFileName" disabled style="margin: 0 auto"/>
+                    <form id="depositExcelUploadFm">
+                        <label for="depositExcelUpload" class="BTNS icon search"><a><span>업로드</span></a></label>
+                        <input type="file" id="depositExcelUpload" class="depositExcelUpload" name="depositExcelUpload" style="display: none"/>
+                    </form>
+                </div>-->
+            </div>
+        </div>
+        <!-- //////////////////// Content List -->
+        <div class="LIST_BOX">
+            <!-- Search Result, buttons -->
+            <!--<div class="list_top_area">
+                <div class="list_search_result">
+                    <b>조회기간</b>2020년 12월
+                </div>
+                <div class="list_top_btn_box">
+                    <select>
+                        <option>전체보기</option>
+                    </select>
+                </div>
+            </div>-->
+            <!-- List Table -->
+            <div class="list_table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="sz_50">No</th>
+                        <th>연도</th>
+                        <th>월</th>
+                        <th>입금일</th>
+                        <th>입금시간</th>
+                        <th>입금액</th>
+                        <th>입금내용</th>
+                        <th>거래점명</th>
+                        <th>업체조회</th>
+                        <th>업체명</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="list, index : ${pageList.resultList}">
+                    <tr>
+                        <td th:text="${list.rnum}">1</td>
+                        <td th:text="|${list.Dyear}년|">2021년</td>
+                        <td th:text="|${list.Dmm}월|">11월</td>
+                        <td th:text="${list.depositDt}">2021.07.21</td>
+                        <td th:text="|${list.Dtime}|">13:59:00</td>
+                        <td th:text="${#numbers.formatInteger(list.depositAccount, 0, 'COMMA')}">100,000,000</td>
+                        <td th:text="${list.depositContent}">(주)에프엔디솔루션</td>
+                        <td th:text="${list.depositBank}">(우리)</td>
+                        <td>
+                            <select class="t_select">
+                                <option selected>업체를 선택해주세요.</option>
+                                <th:block th:each="companyList : ${companyList}">
+                                    <option
+                                            th:value="${companyList.companyNo}"
+                                            th:text="${companyList.companyName}">
+                                    </option>
+                                </th:block>
+                            </select>
+                        </td>
+                        <td th:text="${list.companyName}"></td>
+                        <td>
+                            <label><a class="goSubmit"  th:attr="depositDtNo=${list.depositDtNo}">저장</a></label>
+                            <label><a class="goDelete"  th:attr="depositDtNo=${list.depositDtNo}">삭제</a></label>
+                        </td>
+                    </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+            <th:block th:replace="_fragment/common :: pageNaviFragment"></th:block>
+        </div>
+    </div>
+    <!-- Content List //////////////////// -->
+</th:block>

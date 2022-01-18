@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+
+<th:block th:fragment="headerFragment">
+<!-- Head Area -->
+<div class="HEAD_AREA">
+<script type="text/javascript">
+$(function (){
+    // 현재 상위메뉴 highlight
+    jQuery("a.SUB.marked").parents(".SUBMENU").prev().addClass("marked");
+    jQuery("a.SUB.marked").parents(".SUBMENU").show();
+    jQuery("a.GNB[href=\\#]").click(menuAction);
+});
+// 상위 메뉴 클릭시 메뉴 노출
+function menuAction() {
+    jQuery(this).parent().parent().find("div.SUBMENU").hide();
+    jQuery(this).parent().next().show();
+	return false;
+}
+</script>
+    <!-- Info -->
+    <div class="Head_info">
+        <div class="info_box head_min_size">
+            <ul>
+                <li class="date" th:text="|Today : ${#calendars.format(#calendars.createNow(), 'yyyy년 MM 월dd일 ')}|">Today : 2020. 05. 01</li>
+                <li>
+					  <!-- <b>genie(박진호)</b>님 환영합니다.-->
+                </li>
+            </ul>
+            <ul>
+                <!--<li>원영건업(주)</li>
+                <li>
+                    <a href="#" class="head_logout"><span>LOGOUT</span></a>
+                </li>-->
+            </ul>
+        </div>
+    </div>
+    <!-- GNB Main Menu Area -->
+    <div class="Head_menu">
+        <div class="menu_box head_min_size">
+            <!--<a href="/" class="logo_head">Inface HUB MAIN</a>-->
+            <li><a href="/" class="GNB">INFACE CBP</a></li>
+            <ul>
+                <li><a href="#" class="GNB" >서비스이용현황</a></li>
+			        <div class="SUBMENU" style="padding-top:30px; display:none;">
+					    <ul><li><a href="#" th:href="@{/overallUsageStatus}" class="SUB">전체 이용내역현황</a></li>
+                            <li><a href="#" th:href="@{/operationSiteManagement}" class="SUB">운영현장 관리</a></li>
+			            </ul>
+			        </div>
+                <li><a href="#" class="GNB" >매출내역관리</a></li>
+                <div class="SUBMENU" style="padding-top:30px; display:none;">
+                    <ul>
+                        <li><a href="#" th:href="@{/companySalesList}"  class="SUB">매출현황조회</a></li>
+                        <li><a href="#" th:href="@{/salesStatusRegistManagement}" class="SUB">매출내역 등록관리</a></li>
+                        <li><a href="#" th:href="@{/depositRegistManagement}" class="SUB">입금내역 등록관리</a></li>
+                    </ul>
+                </div>
+                <li><a href="#" class="GNB" >시설운영관리</a></li>
+                <div class="SUBMENU" style="padding-top:30px; display:none;">
+                    <ul>
+                        <li><a href="#" th:href="@{/siteFacility}" class="SUB">시설내역 관리</a></li>
+                    </ul>
+                </div>
+                <li><a href="#" class="GNB" >업체관리</a></li>
+                <div class="SUBMENU" style="padding-top:30px; display:none;">
+                    <ul>
+                        <li><a href="#" th:href="@{/clientCompanyManagement}" class="SUB">거래처관리</a></li>
+                        <li><a href="#" th:href="@{/subCompanyManagerment}" class="SUB">협력업체관리</a></li>
+                    </ul>
+                </div>
+                <li><a href="#" class="GNB" >단말기관리</a></li>
+                <div class="SUBMENU" style="padding-top:30px; display:none;">
+                    <ul>
+                        <li><a href="#" th:href="@{/deviceManagement}" class="SUB">단말기관리</a></li>
+                        <li><a href="#" th:href="@{/wirelessEquipmentManagement}" class="SUB">무선장비관리</a></li>
+                    </ul>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <!-- GNB Sub Menu Area -->
+   <div class="Head_subm">
+        <div class="subm_box head_min_size">
+            <a href="#" class="logo_head_txt">INFACECBP 위에 로고는 임시로 올린것.</a>
+        </div>
+    </div>
+</div>
+</th:block>
+
+
+<th:block th:fragment="footerFragment">
+<!-- Footer Area -->
+<div class="FOOTER_AREA">
+    <div class="Foot_box">
+        <h1></h1>
+        <div class="foot_text">
+            <p class="adress">서울특별시 중랑구 신내역로3길 40-36 신내데시앙플렉스 B동 103호 | <b>문의전화</b> : 1833-9598 (24시간, 365일) | <b>E-mail</b> : sales@infaccbp.com</p>
+            <p class="copyright">© 2018 인페이스플랫폼 주식회사, ALL RIGHTS RESERVED.</p>
+        </div>
+    </div>
+</div>
+</th:block>
+
+
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recipe.mapper">
+
+<update id="stepdown_update">
+	update recipe set step = step - 1
+	where id= (select pid from recipe_comment where id= #{id})
+</update>
+
+<update id="root_step_update">
+	update recipe set root = #{pid}, step = step + 1
+	where id=#{pid}	
+</update>
+
+<update id="point_item_update">
+	update member set point = point - 50
+	where userid=#{userid}	
+</update>
+
+<insert id="item_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -50, sysdate, 4, #{point} -50 , 4, 0)	
+</insert>
+<update id="point_itemone_update">
+	update member set point = point + 50
+	where userid=#{userid}	
+</update>
+
+<insert id="itemone_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, +50, sysdate, 2, #{point} +50 , 4, 0)	
+</insert>
+
+<select id="select_good" resultType="integer"> 
+	select count(*) 
+	from good
+	where userid = #{userid} and boardid = #{boardid} and board = '레시피'
+</select>
+
+<update id="good_update">
+	update recipe set good = good + 1
+	where id=#{id}	
+</update>
+
+<insert id="good_insert">
+	insert into good
+		(userid, boardid, board)
+	values 
+		( #{userid}, #{id}, '레시피')	
+</insert>
+
+<update id="comment_update">
+	update recipe_comment set content=#{content}
+	where id= #{id}
+</update>
+
+<delete id="comment_delete">
+	delete from recipe_comment where id=#{id} 
+</delete>
+
+<select id="comment_list" resultType="recipe.RecipeCommentVO">
+	select to_char(writedate, 'yyyy-mm-dd hh24:mi:ss') writedate, 
+			e.*, (select nickname from member 
+				where userid=e.userid) name 
+	from recipe_comment e
+	where pid=#{pid}
+	order by id desc
+
+</select>
+
+<insert id="comment_insert">
+	insert into recipe_comment(pid, userid, content)
+	values (#{pid}, #{userid}, #{content})
+</insert>
+
+<update id="update">
+	update recipe set title=#{title}, content=#{content},
+				category=#{category}, 
+				filename=#{filename, jdbcType=VARCHAR},
+				filepath=#{filepath, jdbcType=VARCHAR}
+	where id=#{id}	
+</update>
+
+<delete id="delete">
+	delete from recipe where id=#{id}
+</delete>
+
+<update id="read">
+	update recipe set readcnt = readcnt+1 where id=#{id}
+</update>
+
+<select id="detail" resultType="recipe.RecipeVO">
+	select (select nickname from member
+	        where userid=e.userid) name, e.* 
+	from recipe e where id=#{id}
+</select>
+
+<insert id="insert">
+	insert into recipe
+		(title, content, userid, category, filename, filepath)
+	values 
+		( #{title}, #{content}, #{userid},
+		  #{category},
+		  #{filename, jdbcType=VARCHAR}, 
+		  #{filepath, jdbcType=VARCHAR} )
+</insert>
+
+
+<sql id="search">
+	<if test="search=='all'">
+		where title like '%' || #{keyword} || '%'
+		or content like '%' || #{keyword} || '%'
+		or category like '%' || #{keyword} || '%'
+		or userid in (select userid from member
+		              where nickname like '%' || #{keyword} || '%' )
+	</if>
+	<if test="search=='title' or search=='content' or search=='category' ">
+		where ${search} like '%' || #{keyword} || '%'
+	</if>
+	<if test="search=='writer'">
+		where userid in (select userid from member
+		                 where nickname like '%' || #{keyword} || '%' )
+	</if>
+</sql>
+
+<select id="list" resultType="recipe.RecipeVO">
+	select (select count(*) from recipe_comment 
+			where pid=e.id) comments, 
+		(select nickname from member 
+			where userid=e.userid) name, e.* 
+	from (select rownum no, e.*  
+		from (select * from recipe <include refid="search"/>
+			  order by id) e
+		order by no desc) e
+	where no between #{beginList} and #{endList}
+</select>
+
+<select id="totalCount" resultType="integer">
+	select count(*) from recipe <include refid="search"/>
+</select>
+
+</mapper>

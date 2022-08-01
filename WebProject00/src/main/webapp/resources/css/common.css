@@ -1,0 +1,105 @@
+@charset "UTF-8";
+body{
+	margin: 0 auto; 
+	text-align: center;
+	font-family: m, sans-serif;
+	background-color: silver;
+}
+table {
+	margin: 0 auto;
+	width: 80%;
+	border:none;
+	border-collapse: collapse;
+	
+}
+table th, table td{
+	border:none;
+	padding: 5px 13px;
+	
+}
+table a:hover{
+	cursor: pointer;
+	font-weight: bold;
+}
+
+a:hover{
+	cursor: pointer;
+}
+.btn-fill, .btn-empty{
+	text-align: center;
+	
+	border: none;
+	background-color: #000000;	
+}
+
+.btn-fill{	
+	color: #ffffff;	
+	padding: 5px;
+	font-size: 15px;
+	font-weight: bold;
+}
+.btn-empty{
+	color: #ffffff;	
+	padding: 5px;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.left{
+	text-align: left;
+}
+
+.center{
+	text-align: center;
+}
+
+.right{
+	text-align: right;
+}
+
+input[type=text], input[type=password]{
+	height: 22px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
+@font-face{
+	font-family: 'Nanum Gothic', sans-serif;
+	
+}
+.btn-img{
+	width: 22px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+.btn-fill-s, .btn-empty-s{	
+	border: 3px solid #000000;	
+	text-align: center;
+	padding: 2px 6px;	
+	font-size: 13px;
+}
+.btn-fill-s{
+	background-color: #ffffff;
+	color: #000000; 
+}
+.btn-empty-s{
+	background-color: #ffffff;
+	color: #000000; 
+}
+#list-top {
+	width: 80%;
+	padding-bottom: 50px;
+	margin: 0 auto;
+}
+#list-top select[name=search]{
+	height: 28px; width: 90px;
+}
+#list-top input[name=keyword]{
+	width: 300px;
+	vertical-align: top;
+}
+h1 {
+ font-size: 21px;
+ color: #ffffff;
+}
+

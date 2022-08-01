@@ -1,0 +1,103 @@
+package item;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import member.MemberVO;
+
+@Service
+public class ItemServiceImpl implements ItemService {
+	
+	@Autowired private ItemDAO dao;
+
+	
+	@Override
+	public void member_point_item4_update(MemberVO vo) {
+		dao.member_point_item4_update(vo);
+	}
+	@Override
+	public void pointh_item4_insert(PointhVO pvo) {
+		dao.pointh_item4_insert(pvo);
+	}	
+	
+	@Override
+	public void member_point_item5_update(MemberVO vo) {
+		dao.member_point_item5_update(vo);
+	}
+	@Override
+	public void pointh_item5_insert(PointhVO pvo) {
+		dao.pointh_item5_insert(pvo);
+	}	
+	
+	@Override
+	public void member_point_item6_update(MemberVO vo) {
+		dao.member_point_item6_update(vo);
+	}
+	@Override
+	public void pointh_item6_insert(PointhVO pvo) {
+		dao.pointh_item6_insert(pvo);
+	}
+	
+	@Override
+	public boolean send_item(int id) {
+		return dao.send_item(id);
+	}
+	
+	@Override
+	public ItemPageVO item_list(ItemPageVO page) {
+		return dao.item_list(page);
+	}
+	
+	@Override
+	public void member_point_itemone_update(MemberVO vo) {
+		dao.member_point_itemone_update(vo);
+	}
+
+	@Override
+	public void pointh_itemone_insert(PointhVO pvo) {
+		dao.pointh_itemone_insert(pvo);
+	}
+
+	@Override
+	public void member_point_itemtwo_update(MemberVO vo) {
+		dao.member_point_itemtwo_update(vo);
+	}
+
+	@Override
+	public void pointh_itemtwo_insert(PointhVO pvo) {
+		dao.pointh_itemtwo_insert(pvo);
+	}
+
+	@Override
+	public void member_point_itemthree_update(MemberVO vo) {
+		dao.member_point_itemthree_update(vo);
+	}
+
+	@Override
+	public void pointh_itemthree_insert(PointhVO pvo) {
+		dao.pointh_itemthree_insert(pvo);
+	}
+	@Override
+	public List<MemberVO> member_list(MemberVO vo) {
+		return dao.member_list(vo);
+	}
+	
+	@Override
+	public String select_email(String userid) {
+		return dao.select_email(userid);
+	}
+	@Override
+	public String select_name(String userid) {
+		return dao.select_name(userid);
+	}
+	@Override
+	public String select_userid(int id) {
+		return dao.select_userid(id);
+	}
+	@Override
+	public Integer select_itemid(int id) {
+		return dao.select_itemid(id);
+	}
+}

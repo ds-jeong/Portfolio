@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice.mapper">
+
+<delete id="delete">
+	delete from notice where id=#{id}
+</delete>
+
+<update id="update">
+	update notice set title=#{title}, content=#{content} where id=#{id}
+</update>
+
+<update id="read1">
+	update notice set readcnt = readcnt+1 where id=#{id}
+</update>
+
+
+<select id="detail" resultType="notice.Aol_NoticeVO">
+	select writer, n.* 
+	from notice n where id=#{id}
+</select>
+
+<!-- select (select name from member where userid=writer) writer, n.* 
+	from notice n where id=#{id} -->
+	
+<insert id="insert">
+	insert into notice(title, content, writer) 
+	values (#{title}, #{content}, #{writer})
+</insert>
+
+<!-- <insert id="insert">
+	insert into notice(title, content, writer) 
+	values (#{title}, #{content}, #{writer})
+</insert>	 -->
+
+
+
+	<sql id="search">
+		<if test="search=='all'">
+			where title like '%' || #{keyword} ||'%'
+			or content like'%' || #{keyword} ||'%'
+			or writer like'%' || #{keyword} ||'%'
+		</if>
+		<if test="search=='title' or search == 'content'">
+			where ${search} like '%' || #{keyword} ||'%'
+		</if>
+		<if test="search=='writer'">
+			where ${search} like '%' || #{keyword} ||'%'
+		</if>
+	</sql>
+
+<select id="list" resultType="notice.Aol_NoticeVO">
+	select  n.* from 
+	(select n.*, rownum no 
+	from (select * from notice <include refid="search" /> order by id) n
+	order by no desc) n
+	where no between #{beginList} and 	#{endList}
+</select>
+
+<select id="totalCount" resultType="integer">
+	select count(*) from notice <include refid="search" />
+</select>
+
+</mapper>

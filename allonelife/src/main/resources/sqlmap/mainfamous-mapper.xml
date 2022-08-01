@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mainfamous.mapper">
+
+<select id="noticelist" resultType="mainfamous.MainFamousVO">
+<![CDATA[  
+	select * from
+	(select * from notice
+	order by writedate desc)
+	where rownum <= 3
+]]>	
+</select>
+
+<select id="recipelist" resultType="mainfamous.MainFamousVO">
+<![CDATA[  
+	select * from
+	(select * from recipe
+	order by good desc)
+	where rownum <= 3
+]]>	
+</select>
+
+<select id="exchangelist" resultType="mainfamous.MainFamousVO">
+<![CDATA[  
+	select * from
+	(select * from exchange
+	order by good desc)
+	where rownum <= 3
+]]>	
+</select>
+
+<select id="tiplist" resultType="mainfamous.MainFamousVO">
+<![CDATA[  
+	select * from
+	(select * from tip
+	order by good desc)
+	where rownum <= 3
+]]>	
+</select>
+
+<select id="boardlist" resultType="mainfamous.MainFamousVO">
+<![CDATA[  
+	select * from
+	(select * from board
+	order by good desc)
+	where rownum <= 3
+]]>	
+</select>
+
+</mapper>

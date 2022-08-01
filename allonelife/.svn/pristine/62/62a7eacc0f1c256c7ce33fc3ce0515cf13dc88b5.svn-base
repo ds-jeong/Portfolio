@@ -1,0 +1,156 @@
+@charset "UTF-8";
+body { 
+	margin: 0 auto;
+	text-align: center; 
+	font-family: 'Gothic A1', sans-serif;
+
+}
+@import url('https://fonts.googleapis.com/css?family=Gothic+A1&display=swap&subset=korean');
+/* @font-face{
+	font-family: HSBomBaram2.0; 
+	src: url("./fonts/HSBomBaram2.0.woff") format("woff"); 
+} */
+h3 {
+	padding: 20px 0;  
+}
+table {
+	margin : 0 auto;
+	width: 70%;
+	border-collapse: separate;
+ 	 border-spacing: 0em 5px;
+ 	 background-color: #ffffff;
+ 	 border-radius: 20px;
+ 	 border: 3px solid #207ea9;
+ 	 padding: 10px;  
+	
+}
+table th, table td {
+	color: #207ea9;
+	font-style: normal;
+	font-size: 18px;
+	background-color: #ffffff;
+	border-color: #ffffff; 	
+	padding: 10px;
+	border-bottom: 1px solid #cad3de;
+} 
+table th{
+	border-bottom: 2px solid #207ea9;
+	padding-bottom: 10px;
+}
+table tr:last-child td{
+	border-bottom: 1px solid #ffffff;
+} 
+table a:hover{ 
+	cursor: pointer;
+	font-weight: bold;  
+}
+a:hover{ 
+	cursor: pointer;
+}
+
+.btn-fill, .btn-empty{
+	text-align: center;
+	padding: 3px 10px;
+	border: 1px solid #207ea9;
+	border-radius: 2px;
+	background-color: #ffffff;
+	
+}
+.btn-fill{
+	
+	color: #207ea9;	
+	padding: 8px;
+	font-size: 15px;
+	font-weight: bold;
+}
+.btn-empty{
+	color: #207ea9;	
+	padding: 8px;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.btn-fill-s, btn-empty-s{
+	text-align: center;
+	padding: 2px 6px;
+	border: 1px solid #60c5f0;
+	border-radius: 5px;
+	
+	
+}
+.btn-fill-s{
+	background-color: #207ea9;
+	color: #fff;
+	font-size: 13px;
+	
+}
+
+.btn-empty-s{
+	background-color: #fff;
+	color: #78aeff;
+}
+
+
+
+
+.left { text-align: left; }
+.center { text-align: center; }
+.right { text-align: right; }
+
+input[type=text], input[type=password] {
+	height: 22px;
+	padding-left: 5px; padding-right: 5px;
+}
+
+.btn-img {
+	width:22px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#list-top {
+	margin-left: 15%;
+	width: 70%;
+    padding-bottom: 50px;
+    color: #207ea9;
+}
+#list-top select[name=search]{
+
+	color: #207ea9;
+	height: 28px; width: 82px;
+	
+	
+}
+#list-top input[name=keyword]{
+	width: 300px;
+	vertical-align: top;
+	
+	
+	
+}
+
+.btn-img2 {
+
+	width:400px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

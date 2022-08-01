@@ -1,0 +1,15 @@
+package item;
+
+import member.MemberVO;
+
+public interface ItemService {
+	
+	void member_point_itemone_update(MemberVO vo);
+	void pointh_itemone_insert(PointhVO pvo);
+	
+	void member_point_itemtwo_update(MemberVO vo);
+	void pointh_itemtwo_insert(PointhVO pvo);
+	
+	void member_point_itemthree_update(MemberVO vo);
+	void pointh_itemthree_insert(PointhVO pvo);
+}

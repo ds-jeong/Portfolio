@@ -1,0 +1,43 @@
+package item;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import member.MemberVO;
+
+@Service
+public class ItemServiceImpl implements ItemService {
+	
+	@Autowired private ItemDAO dao;
+	
+	@Override
+	public void member_point_itemone_update(MemberVO vo) {
+		dao.member_point_itemone_update(vo);
+	}
+
+	@Override
+	public void pointh_itemone_insert(PointhVO pvo) {
+		dao.pointh_itemone_insert(pvo);
+	}
+
+	@Override
+	public void member_point_itemtwo_update(MemberVO vo) {
+		dao.member_point_itemtwo_update(vo);
+	}
+
+	@Override
+	public void pointh_itemtwo_insert(PointhVO pvo) {
+		dao.pointh_itemtwo_insert(pvo);
+	}
+
+	@Override
+	public void member_point_itemthree_update(MemberVO vo) {
+		dao.member_point_itemthree_update(vo);
+	}
+
+	@Override
+	public void pointh_itemthree_insert(PointhVO pvo) {
+		dao.pointh_itemthree_insert(pvo);
+	}
+
+}

@@ -1,0 +1,22 @@
+package member;
+
+import item.PointhVO;
+
+public interface MemberService {
+	//CRUD
+	boolean member_insert(MemberVO vo);//회원가입
+	MemberVO member_select(String userid); //내 정보 보기
+	MemberVO member_login(String userid, String userpwd);//로그인
+	boolean userid_usable(String userid);//아이디 중복확인
+	boolean member_update(MemberVO vo);//내 정보 변경
+	boolean member_delete();//회원탈퇴
+	boolean nickname_usable(String nickname);
+	boolean email_usable(String email);
+	void nick_update(MemberVO vo);
+	void userpwd_update(MemberVO vo);
+	void user_info_delete(String userid);
+	PointhPageVO mypage_point_list(PointhPageVO page);
+	MyWritePageVO mypage_write_list(MyWritePageVO mypage);
+	
+	void member_join_point_insert(PointhVO pvo);
+	}

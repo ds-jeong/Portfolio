@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<style>
+.div_left{
+	width: 700px;
+	margin: 0 auto;
+	text-align: left;
+}
+</style>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<br>
+<br>
+		<div class="div_left">
+			<h2>탈퇴 안내</h2>
+			<p class="contxt">회원탈퇴를 신청하기 전에 안내 사항을 꼭 확인해주세요.</p>
+
+		<div class="section_delete">
+			<h4 class="h_dropout">
+						     	  사용하고 계신 아이디(<em> '${login_info.userid}' </em>)는 탈퇴할 경우 재사용 및 복구가 불가능합니다.
+						     </h4>
+			<p class="dropout_dsc">
+						     	  <em>탈퇴한 아이디는 본인과 타인 모두 재사용 및 복구가 불가</em>하오니 신중하게 선택하시기 바랍니다.
+						     </p>
+			<h4 class="h_dropout">탈퇴 후에도 등록한 게시물은 그대로 남아 있습니다.</h4>
+			<p class="dropout_dsc">게시글 및 댓글은 탈퇴 시 자동 삭제되지 않고 그대로 남아 있습니다.
+			<br>
+						     	  삭제를 원하는 게시글이 있다면 <em>반드시 탈퇴 전 삭제하시기 바랍니다.</em>
+						     
+			<br>
+								탈퇴 후에는 회원정보가 삭제되어 본인 여부를 확인할 수 있는 방법이 없어,<br>
+								 게시글을 임의로 삭제해드릴 수 없습니다. <br>
+							 
+			</p>
+		</div>	
+						<strong>
+						     	  탈퇴 후에는 아이디 <em>( '${login_info.userid}' )</em>의 데이터는 복구할 수 없습니다.
+						     <br>
+								 게시판형 서비스에 남아 있는 게시글은 탈퇴 후 삭제할 수 없습니다.<br><br>
+							</strong>
+		</div>
+			<form method="post" action="user_info_delete">
+			<input type="hidden" value="${login_info.userid}" name="userid">
+					<input type="checkbox" id="dropoutAgree" name="dropoutAgree">
+					<label for="dropoutAgree"><strong>안내 사항을 모두 확인하였으며, 이에 동의합니다.</strong></label><br><br><br>
+						<a class="btn-fill" id="check" onclick="check();">확인</a>
+				</form>			
+<script>
+function check() {
+	if( $("#dropoutAgree").is(":checked")){
+		$('form').submit();
+	}else{
+		alert("탈퇴 안내를 확인하고 동의해 주세요.");
+		$("#dropoutAgree").focus();
+	}
+}
+</script>
+</body>
+</html>

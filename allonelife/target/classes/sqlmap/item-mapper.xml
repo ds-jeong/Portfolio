@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="item.mapper">
+
+
+<select id="select_userid" resultType="String">
+	select userid from pointh where id = #{id}
+</select>
+
+<select id="select_email" resultType="String">
+	select email from member where userid = #{userid}
+</select>
+<select id="select_name" resultType="String">
+	select name from member where userid = #{userid}
+</select>
+
+<select id="select_itemid" resultType="Integer">
+	select itemid from pointh where id = #{id}
+</select>
+
+<select id="memberlist" resultType="member.MemberVO">
+	select * from member where userid = #{userid}	
+</select>
+
+<update id="send_item">
+update pointh set send = 1
+where id = #{id}
+</update>
+
+<update id="point_itemone_update">
+	update member set point = point - 3000
+	where userid=#{userid}	
+</update>
+
+<insert id="itemone_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -3000, sysdate, 1, (select point from member where userid = #{userid}) -3000 , 3, 0)	
+</insert>
+
+<update id="point_itemtwo_update">
+	update member set point = point - 5000
+	where userid=#{userid}	
+</update>
+
+<insert id="itemtwo_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -5000, sysdate, 1, (select point from member where userid = #{userid}) -5000 , 1, 0)	
+</insert>
+
+<update id="point_itemthree_update">
+	update member set point = point - 3000
+	where userid=#{userid}	
+</update>
+
+<insert id="itemthree_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -3000, sysdate, 1, (select point from member where userid = #{userid}) -3000 , 2, 0)	
+</insert>
+
+<update id="point_item4_update">
+	update member set point = point - 4100
+	where userid=#{userid}	
+</update>
+
+<insert id="item4_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -4100, sysdate, 1, (select point from member where userid = #{userid}) -4100 , 7, 0)	
+</insert>
+<update id="point_item5_update">
+	update member set point = point - 8200
+	where userid=#{userid}	
+</update>
+
+<insert id="item5_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -8200, sysdate, 1, (select point from member where userid = #{userid}) -8200 , 8, 0)	
+</insert>
+<update id="point_item6_update">
+	update member set point = point - 5000
+	where userid=#{userid}	
+</update>
+
+<insert id="item6_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, -5000, sysdate, 1, (select point from member where userid = #{userid}) -5000 , 9, 0)	
+</insert>
+
+<select id="list"
+		resultType="item.PointhVO">
+select c.id, (select name from member where userid = c.userid) name, (select nickname from member where userid = c.userid) nickname, (select email from member where userid = c.userid) email, rownum no, c.*
+from (select * from pointh) c
+where how = 1 and send = 0
+order by pdate 
+	</select>
+
+	<select id="totalCount" resultType="integer">
+		select count(*) from pointh
+	</select>
+
+
+</mapper>

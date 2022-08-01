@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="freeboard.mapper">
+
+<update id="stepdown_update">
+	update board set step = step - 1
+	where id= (select pid from board_comment where id= #{id})
+</update>
+
+<update id="root_step_update">
+	update board set root = #{pid}, step = step + 1
+	where id=#{pid}	
+</update>
+	
+<select id="select_good" resultType="integer"> 
+	select count(*) 
+	from good
+	where userid = #{userid} and boardid = #{boardid} and board = '자유게시판'
+</select>
+
+<update id="good_update">
+	update board set good = good + 1
+	where id=#{id}	
+</update>
+
+<insert id="good_insert">
+	insert into good
+		(userid, boardid, board)
+	values 
+		( #{userid}, #{id}, '자유게시판')	
+</insert>
+
+	<update id="comment_update">
+		update board_comment
+		set content=#{content}
+		where id=#{id}
+	</update>
+
+	<delete id="comment_delete">
+		delete from board_comment where id=#{id}
+	</delete>
+
+
+	<select id="comment_list" resultType="freeboard.FreeBoardCommentVO">
+		select to_char(writedate, 'yyyy-MM-dd hh:mi:ss') writedate, e.*, (select
+		nickname from member
+		where userid=e.userid) nickname
+		from board_comment e
+		where pid = #{pid}
+		order by id desc
+	</select>
+
+	<insert id="comment_insert">
+		insert into board_comment(pid, userid, content)
+		values (#{pid}, #{userid}, #{content})
+	</insert>
+
+
+	<update id="update">
+		update board
+		set title=#{title}, content=#{content},
+		filename=#{filename, jdbcType=VARCHAR},
+		filepath=#{filepath, jdbcType=VARCHAR}
+		where id=#{id}
+	</update>
+
+	<delete id="delete">
+		delete from board where id=#{id}
+	</delete>
+
+	<update id="read">
+		update board set readcnt = readcnt+1 where id=#{id}
+	</update>
+
+	<select id="detail" resultType="freeboard.FreeBoardVO">
+		select (select nickname from member
+		where userid=b.userid ) name, b.*
+		from board b where id=#{id}
+	</select>
+
+	<insert id="insert">
+		insert into board(id, root, title, content, userid,
+		filename, filepath)
+		values (seq_board.nextval, seq_board.currval,
+		#{title}, #{content}, #{userid},
+		#{filename, jdbcType=VARCHAR},
+		#{filepath, jdbcType=VARCHAR} )
+
+	</insert>
+
+	<sql id="search">
+		<if test="search=='all'">
+			where title like '%' || #{keyword} ||'%'
+			or content like
+			'%' || #{keyword} ||'%'
+			or userid in(select userid from member
+			where nickname like '%' || #{keyword} ||'%')
+		</if>
+		<if test="search=='title' or search == 'content'">
+			where ${search} like '%' || #{keyword} ||'%'
+		</if>
+		<if test="search=='userid'">
+			where userid in (select userid from member
+			where nickname like '%' || #{keyword} ||'%')
+		</if>
+	</sql>
+
+	<select id="list" resultType="freeboard.FreeBoardVO">
+		select (select count(*) from board_comment where pid=b.id) comments,
+		(select nickname from member where userid=b.userid) name, b.*
+		from (select rownum no, b.*
+		from (select * from board
+		<include refid="search" />
+		order by id) b
+		order by no desc)b
+		where no between #{beginList} and #{endList}
+	</select>
+
+	<select id="totalCount" resultType="integer">
+		select count(*) from board
+		<include refid="search" />
+	</select>
+
+</mapper>

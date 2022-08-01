@@ -1,0 +1,67 @@
+package com.hanul.allonelife;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import common.CommonService;
+import item.ItemServiceImpl;
+import item.PointhVO;
+import member.MemberVO;
+
+@Controller
+public class ItemController {
+	
+	@Autowired
+	private ItemServiceImpl service;
+	@Autowired
+	private CommonService common;
+	
+	//아이템 1 클릭시
+	@RequestMapping("/insert.itemone")
+	public String itemone(MemberVO vo, PointhVO pvo, HttpSession ss) {
+		vo.setUserid(((MemberVO) ss.getAttribute("login_info")).getUserid());
+		service.member_point_itemone_update(vo);
+		  
+		pvo.setUserid(((MemberVO) ss.getAttribute("login_info")).getUserid());
+		pvo.setPoint(((MemberVO) ss.getAttribute("login_info")).getPoint()); 
+		service.pointh_itemone_insert(pvo);
+		 
+		return "redirect:list.it";
+	}
+	
+	//아이템 2 클릭시
+	@RequestMapping("/insert.itemtwo")
+	public String itemtwo(MemberVO vo, PointhVO pvo, HttpSession ss) {
+		vo.setUserid(((MemberVO) ss.getAttribute("login_info")).getUserid());
+		service.member_point_itemtwo_update(vo);
+			  
+		pvo.setUserid(((MemberVO) ss.getAttribute("login_info")).getUserid());
+		pvo.setPoint(((MemberVO) ss.getAttribute("login_info")).getPoint()); 
+		service.pointh_itemtwo_insert(pvo);
+			 
+		return "redirect:list.it";
+	}
+	
+	//아이템 3 클릭시
+	@RequestMapping("/insert.itemthree")
+	public String itemthree(MemberVO vo, PointhVO pvo, HttpSession ss) {
+		vo.setUserid(((MemberVO) ss.getAttribute("login_info")).getUserid());
+		service.member_point_itemthree_update(vo);
+			  
+		pvo.setUserid(((MemberVO) ss.getAttribute("login_info")).getUserid());
+		pvo.setPoint(((MemberVO) ss.getAttribute("login_info")).getPoint()); 
+		service.pointh_itemthree_insert(pvo);
+			 
+		return "redirect:list.it";
+	}	
+		
+	
+	// 상품페이지 화면 요청
+	@RequestMapping("/list.it")
+	public String recipe() {
+		return "item/list";
+	}
+}

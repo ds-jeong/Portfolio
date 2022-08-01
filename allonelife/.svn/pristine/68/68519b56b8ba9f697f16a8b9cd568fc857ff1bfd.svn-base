@@ -1,0 +1,28 @@
+package item;
+
+import member.MemberVO;
+
+public interface ItemService {
+	
+	void member_point_itemone_update(MemberVO vo);
+	void pointh_itemone_insert(PointhVO pvo);
+	
+	void member_point_itemtwo_update(MemberVO vo);
+	void pointh_itemtwo_insert(PointhVO pvo);
+	
+	void member_point_itemthree_update(MemberVO vo);
+	void pointh_itemthree_insert(PointhVO pvo);
+	
+	void member_point_item4_update(MemberVO vo);
+	void pointh_item4_insert(PointhVO pvo);
+	
+	void member_point_item5_update(MemberVO vo);
+	void pointh_item5_insert(PointhVO pvo);
+	
+	void member_point_item6_update(MemberVO vo);
+	void pointh_item6_insert(PointhVO pvo);
+	
+	ItemPageVO item_list(ItemPageVO page);
+	
+	boolean send_item(int id);
+}

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member.mapper">
+
+	<insert id="join_point_insert">
+	insert into pointh
+		(userid, pointh, pdate, how, point, itemid, send)
+	values 
+		( #{userid}, +500, sysdate, 3, 500, 0, 0)
+	</insert>
+	
+	<select id="myList" resultType="member.MyWriteVO">
+	select * from
+	(select rownum no, t.* from 
+	(select id, userid,'[자유]'||title title, writedate, readcnt, step from board
+	union all
+	select id, userid, '[레시피]'||title title, writedate, readcnt, step from recipe
+	union all
+	select id, userid, '[물물교환]'||title title, writedate, readcnt, step from exchange
+	union all
+	select id, userid, '[팁]'||title title, writedate, readcnt, step from tip) t
+	where userid = #{userid})
+	where no between #{beginList} and #{endList}
+	order by writedate desc
+	</select> 
+	
+	<!-- <select id="myList" resultType="member.MyWriteVO">
+    select to_char(writedate,'yyyy-mm-dd hh:mi:ss') writedate, e.* from 
+	(select rownum no, e.* 
+		from (select * from exchange where userid=#{userid} order by id) e ) e
+	where no between #{beginList} and #{endList}
+	order by 1 desc
+	</select>  -->
+	
+	<select id="totalMyCount" resultType="integer">
+	select count(*)
+	from 
+	(select userid from board where userid=#{userid}
+	union all
+	select userid from recipe where userid=#{userid}
+	union all
+	select userid from exchange where userid=#{userid}
+	union all
+	select userid from tip where userid=#{userid})
+	</select>
+	
+	<select id="list" resultType="item.PointhVO">
+    select to_char(pdate,'yyyy-mm-dd hh24:mi:ss') pdate, e.* from 
+	(select rownum no, e.* 
+		from (select * from pointh where userid=#{userid} order by id) e ) e
+	where userid = #{userid} and no between #{beginList} and #{endList}
+	order by 1 desc
+	</select> 
+	
+	<select id="totalCount" resultType="integer">
+	select count(*) from pointh	where userid=#{userid}	
+	</select>
+
+	<delete id="user_info_delete">
+	delete from member where userid=#{userid}
+	</delete>
+	
+	<update id="userpwd_update">
+	update member 
+	set userpwd = #{userpwd}
+	where userid = #{userid}
+	</update>
+	
+	<update id="nick_update">
+	update member 
+	set nickname = #{nickname}
+	where userid = #{userid}
+	</update>
+			
+	<select id="login" resultType="member.MemberVO">
+		select * from member
+		where userid = #{userid} and userpwd = #{userpwd}
+			</select>
+
+	<insert id="join">
+		insert into member(name, userid, userpwd, email, nickname)
+		values (#{name}, #{userid}, #{userpwd}, #{email}, #{nickname})
+	</insert>
+
+	<select id="usable" resultType="integer">
+		select count(*) from member where userid = #{userid}
+
+	</select>
+	<select id="nickname" resultType="integer">
+		select count(*) from member where nickname = #{nickname}
+	</select>
+	
+	<select id="check_email" resultType="integer">
+		select count(*) from member where email = #{email}
+	</select>
+	
+	
+</mapper>

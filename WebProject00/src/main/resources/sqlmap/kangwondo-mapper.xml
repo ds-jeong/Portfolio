@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kangwondo.mapper">
+
+<update id="update">
+	update kangwondo set title=#{title}, content=#{content},
+				sido=#{sido},
+				filename=#{filename, jdbcType=VARCHAR},
+				filepath=#{filepath, jdbcType=VARCHAR}
+	where no=#{no}	
+</update>
+
+<delete id="delete">
+	delete from kangwondo where no=#{no}
+</delete>
+
+<update id="read">
+	update kangwondo set readcnt = readcnt+1 where no=#{no}
+</update>
+
+<select id="detail" resultType="kangwondo.KangwondoVO">
+	select (select nickname from member
+	        where userid=e.userid) name, e.* 
+	from kangwondo e where no=#{no}
+</select>
+
+
+<sql id="search">
+	<if test="search=='all'">
+		where sido like '%' || #{keyword} || '%'
+		or title like '%' || #{keyword} || '%'
+		or content like '%' || #{keyword} || '%'
+		or userid in (select userid from member
+		              where nickname like '%' || #{keyword} || '%' )
+	</if>
+	<if test="search=='title' or search=='content'">
+		where ${search} like '%' || #{keyword} || '%'
+	</if>
+	<if test="search=='sido'">
+		where ${search} like '%' || #{keyword} || '%'
+	</if>
+	<if test="search=='writer'">
+		where userid in (select userid from member
+		                 where nickname like '%' || #{keyword} || '%' )
+	</if>
+</sql>
+
+<select id="list" resultType="kangwondo.KangwondoVO">
+	select
+		(select nickname from member 
+			where userid=e.userid) name, e.* 
+	from (select rownum id, e.*  
+		from (select * from kangwondo <include refid="search"/>
+			  order by no) e
+		order by id desc) e
+	where id between #{beginList} and #{endList}
+</select>
+
+
+<select id="totalCount" resultType="integer">
+	select count(*) from kangwondo <include refid="search"/>
+</select>
+
+<insert id="insert">
+	insert into kangwondo
+		(title, content, userid, sido, filename, filepath)
+	values 
+		( #{title}, #{content}, #{userid},
+		  #{sido},
+		  #{filename, jdbcType=VARCHAR}, 
+		  #{filepath, jdbcType=VARCHAR} )
+</insert>
+
+</mapper>

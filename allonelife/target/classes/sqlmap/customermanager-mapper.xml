@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="customermanager.mapper">
+
+	<delete id="delete">
+		delete from member where userid=#{id}
+	</delete>
+	
+	<select id="detail" resultType="customer_manager.CustomerManagerVO">
+	select * from member where userid =#{id}
+	</select>
+	
+	<sql id="search">
+	<if test="search=='all'">
+		where nickname like '%' || #{keyword} || '%'
+		or email like '%' || #{keyword} || '%'
+	</if>
+	<if test="search=='nickname' or search=='email' ">
+		where ${search} like '%' || #{keyword} || '%'
+	</if>
+	</sql>
+
+	<select id="list"
+		resultType="customer_manager.CustomerManagerVO">
+		select e.* 
+		from (select rownum no, e.*  
+		from (select * from member <include refid="search"/>
+			  order by nickname) e
+		order by no desc) e
+		where no between #{beginList} and #{endList}
+	</select>
+
+	<select id="totalCount" resultType="integer">
+		select count(*) from member
+		<include refid="search" />
+	</select>
+
+
+</mapper>

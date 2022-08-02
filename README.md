@@ -28,11 +28,17 @@
 Mybatis, javaScript, jsp, springBoot, tymeleaf, docker, nginx 
 
 
-# H.P : 010-9523-4066
+# H.P  
 
-# e-mail : jdaseul527@gmail.com
+010-9523-4066
 
-# Blog : https://ds-jeung.tistory.com/
+# e-mail
+
+jdaseul527@gmail.com
+
+# Blog
+
+https://ds-jeung.tistory.com/
 
 
 # Portfolio
